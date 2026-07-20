@@ -1,0 +1,33 @@
+# This repo holds the RMC app OVERLAY only (config, app, resources, routes,
+# public/css, migrations, seeders). The full Laravel install + vendor live on
+# the server and are never committed here.
+
+# Never commit secrets or environment
+.env
+.env.*
+*.pem
+*.key
+id_ed25519*
+id_rsa*
+
+# Dependencies / build (should never appear in the overlay, but guard anyway)
+/vendor/
+/node_modules/
+
+# Laravel runtime that must not be tracked
+/storage/*.key
+/public/storage
+/public/hot
+/bootstrap/cache/*.php
+
+# Databases / logs
+*.sqlite
+*.sqlite-journal
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
