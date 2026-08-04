@@ -26,6 +26,11 @@
   <div class="rmc-preview-bar">🔒 Private preview for <b>{{ $site->name }}</b> — not public, not indexed. Built by the Retro Motel Collective.</div>
 @endif
 
+@if($indexable)
+  @include('sites.partials.rmc-header')
+@endif
+@include('sites.partials.site-nav', ['current' => 'home'])
+
 <header class="hero" @if($site->heroOrFirst())style="background-image:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55)),url('{{ $site->heroOrFirst() }}')"@endif>
   <div class="hero-inner">
     @if($site->locationLabel())<div class="eyebrow">{{ $site->locationLabel() }}</div>@endif

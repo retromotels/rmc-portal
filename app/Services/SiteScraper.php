@@ -20,6 +20,7 @@ class SiteScraper
             'lat' => null, 'lng' => null, 'phone' => null, 'email' => null,
             'booking_url' => $url, 'price_from' => null,
             'hero_image' => null, 'images' => [], 'amenities' => [],
+            'menu' => [],
             'ok' => false, 'error' => null,
         ];
 
@@ -66,8 +67,99 @@ class SiteScraper
         if (!$out['phone']) $out['phone'] = $this->firstMatch('/tel:([+0-9 ()\-]{6,})/i', $html);
         if (!$out['email']) $out['email'] = $this->firstMatch('/mailto:([^"?\s>]+@[^"?\s>]+)/i', $html);
 
+        // ---- internal menu (same-site pages) ----
+        $out['menu'] = $this->discoverMenu($html, $base, $url);
+
         $out['ok'] = true;
         return $out;
+    }
+
+    /** Discover same-domain internal pages from the site's nav/header menu. */
+    public function discoverMenu(string $html, string $base, string $home): array
+    {
+        $homeHost = parse_url($home, PHP_URL_HOST);
+        $homePath = rtrim(parse_url($home, PHP_URL_PATH) ?: '/', '/') ?: '/';
+
+        $scan = '';
+        if (preg_match_all('/<(nav|header)\b[^>]*>(.*?)<\/\1>/is', $html, $mm)) {
+            $scan = implode(' ', $mm[2]);
+        }
+        if ($scan === '') $scan = $html;
+
+        $out = [];
+        $seen = [];
+        if (preg_match_all('/<a\b[^>]*href\s*=\s*("([^"]*)"|\'([^\']*)\')[^>]*>(.*?)<\/a>/is', $scan, $am, PREG_SET_ORDER)) {
+            foreach ($am as $a) {
+                $href  = $a[2] !== '' ? $a[2] : ($a[3] ?? '');
+                $label = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($a[4]))));
+                if ($label === '' || mb_strlen($label) > 40) continue;
+                if (preg_match('/^(mailto:|tel:)/i', $href)) continue;
+
+                $abs = $this->absolute($href, $base);
+                if (!$abs) continue;
+                $p = parse_url($abs);
+                if (($p['host'] ?? '') !== $homeHost) continue;                 // same site only
+                $path = rtrim($p['path'] ?? '/', '/') ?: '/';
+                if ($path === $homePath) continue;                               // skip home
+                if (preg_match('/\.(pdf|jpe?g|png|zip|docx?|xml)$/i', $path)) continue;
+                if (preg_match('/(wp-login|wp-admin|\/login|\/cart|checkout|my-account|\/feed)/i', $abs)) continue;
+
+                $key = strtolower($path);
+                if (isset($seen[$key])) continue;
+                $seen[$key] = true;
+                $out[] = ['label' => $label, 'url' => $abs];
+                if (count($out) >= 8) break;
+            }
+        }
+        return $out;
+    }
+
+    /** Scrape a single internal page: title, readable body text, images. */
+    public function scrapePage(string $url): array
+    {
+        $res = ['title' => null, 'body' => null, 'images' => [], 'ok' => false];
+        try {
+            $resp = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (compatible; RMCSiteBuilder/1.0; +https://retromotels.com)',
+            ])->timeout(12)->get($url);
+            if (!$resp->ok()) return $res;
+            $html = $resp->body();
+        } catch (\Throwable $e) {
+            return $res;
+        }
+
+        $base = $this->baseUrl($url);
+        $og = $this->metaTags($html);
+        $res['title'] = $this->clean($og['og:title'] ?? $this->titleTag($html));
+        $res['body']  = $this->mainText($html, $og);
+
+        $imgs = [];
+        foreach ($this->collectImageUrls($html, $og) as $src) {
+            $abs = $this->absolute($src, $base);
+            if ($abs && $this->looksLikePhoto($abs)) $imgs[$abs] = true;
+        }
+        $res['images'] = array_slice(array_keys($imgs), 0, 12);
+        $res['ok'] = true;
+        return $res;
+    }
+
+    /** Pull the main readable text out of a page. */
+    private function mainText(string $html, array $og): ?string
+    {
+        $s = preg_replace('/<(script|style|noscript|nav|header|footer|form|svg)\b[^>]*>.*?<\/\1>/is', ' ', $html);
+        if (preg_match('/<(main|article)\b[^>]*>(.*?)<\/\1>/is', $s, $m)) $s = $m[2];
+
+        $paras = [];
+        if (preg_match_all('/<(p|h2|h3|li)\b[^>]*>(.*?)<\/\1>/is', $s, $pm, PREG_SET_ORDER)) {
+            foreach ($pm as $p) {
+                $t = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($p[2]))));
+                if (mb_strlen($t) >= 40) $paras[] = $t;
+            }
+        }
+        $paras = array_slice(array_values(array_unique($paras)), 0, 14);
+        $text = trim(implode("\n\n", $paras));
+        if ($text === '') $text = $this->clean($og['og:description'] ?? null);
+        return $text ?: null;
     }
 
     /* ---------------- helpers ---------------- */

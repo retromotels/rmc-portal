@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Site;
+use App\Models\SitePage;
 use App\Models\User;
 use App\Services\SiteScraper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -65,8 +67,10 @@ class SiteController extends Controller
             'amenities'   => $pulled['amenities'],
         ]);
 
+        $pages = $pulled['ok'] ? $this->crawlPages($site, $pulled['menu'], $scraper) : 0;
+
         $msg = $pulled['ok']
-            ? 'Pulled ' . count($pulled['images']) . ' images from the URL. Review and edit below.'
+            ? 'Pulled ' . count($pulled['images']) . ' images and mirrored ' . $pages . ' internal ' . Str::plural('page', $pages) . '. Review and edit below.'
             : 'Site created, but the URL could not be fully read (' . ($pulled['error'] ?: 'no content') . '). Fill the details in manually.';
 
         return redirect()->route('admin.sites.edit', $site)->with('status', $msg);
@@ -74,8 +78,87 @@ class SiteController extends Controller
 
     public function edit(Site $site)
     {
-        $site->load(['user', 'views' => fn ($q) => $q->orderByDesc('created_at')->limit(50)]);
+        $site->load(['user', 'pages', 'views' => fn ($q) => $q->orderByDesc('created_at')->limit(50)]);
         return view('admin.sites.edit', ['site' => $site]);
+    }
+
+    public function recrawlPages(Site $site, SiteScraper $scraper)
+    {
+        $home = $scraper->scrape($site->source_url);
+        if (!$home['ok']) {
+            return back()->with('status', 'Could not re-read the site menu: ' . ($home['error'] ?: 'no content'));
+        }
+        $start = ((int) $site->pages()->max('nav_order')) + 1;
+        $added = $this->crawlPages($site, $home['menu'], $scraper, $start);
+        return back()->with('status', "Menu re-crawled — added {$added} new " . Str::plural('page', $added) . '.');
+    }
+
+    public function editPage(Site $site, SitePage $page)
+    {
+        abort_unless($page->site_id === $site->id, 404);
+        return view('admin.sites.page', ['site' => $site, 'page' => $page]);
+    }
+
+    public function updatePage(Request $r, Site $site, SitePage $page)
+    {
+        abort_unless($page->site_id === $site->id, 404);
+        $d = $r->validate([
+            'title'       => 'required|string|max:120',
+            'nav_order'   => 'nullable|integer',
+            'body'        => 'nullable|string',
+            'images_text' => 'nullable|string',
+            'visible'     => 'nullable|boolean',
+        ]);
+        $page->update([
+            'title'     => $d['title'],
+            'nav_order' => $d['nav_order'] ?? 0,
+            'body'      => $d['body'] ?? null,
+            'images'    => $this->lines($d['images_text'] ?? ''),
+            'visible'   => (bool) ($d['visible'] ?? false),
+        ]);
+        return redirect()->route('admin.sites.edit', $site)->with('status', 'Page “' . $page->title . '” saved.');
+    }
+
+    public function destroyPage(Site $site, SitePage $page)
+    {
+        abort_unless($page->site_id === $site->id, 404);
+        $page->delete();
+        return back()->with('status', 'Page removed.');
+    }
+
+    /* -------- crawling -------- */
+
+    private function crawlPages(Site $site, array $menu, SiteScraper $scraper, int $startOrder = 0): int
+    {
+        $added = 0;
+        $order = $startOrder;
+        foreach (array_slice($menu, 0, 6) as $item) {
+            if ($site->pages()->where('source_url', $item['url'])->exists()) continue;
+            $p = $scraper->scrapePage($item['url']);
+            $title = $item['label'] ?: ($p['title'] ?: 'Page');
+            $site->pages()->create([
+                'title'      => Str::limit($title, 100, ''),
+                'slug'       => $this->pageSlug($site, $title),
+                'source_url' => $item['url'],
+                'nav_order'  => $order++,
+                'body'       => $p['body'],
+                'images'     => $p['images'],
+                'visible'    => true,
+            ]);
+            $added++;
+        }
+        return $added;
+    }
+
+    private function pageSlug(Site $site, string $title): string
+    {
+        $base = Str::slug($title) ?: 'page';
+        $slug = $base;
+        $i = 2;
+        while ($site->pages()->where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $i++;
+        }
+        return $slug;
     }
 
     public function update(Request $r, Site $site)

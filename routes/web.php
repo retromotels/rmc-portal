@@ -23,6 +23,7 @@ Route::get('/', fn () => redirect()->route('login'));
 // Public microsites (published pages are indexable; preview tokens are noindex + password-gated)
 Route::get('/motel/{key}', [PublicSiteController::class, 'show'])->name('site.show');
 Route::post('/motel/{key}/unlock', [PublicSiteController::class, 'unlock'])->name('site.unlock');
+Route::get('/motel/{key}/{page}', [PublicSiteController::class, 'page'])->name('site.page');
 
 // Guest auth
 Route::middleware('guest')->group(function () {
@@ -74,4 +75,9 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::post('/sites/{site}/rescrape', [SiteController::class, 'rescrape'])->name('sites.rescrape');
     Route::post('/sites/{site}/publish', [SiteController::class, 'togglePublish'])->name('sites.publish');
     Route::delete('/sites/{site}', [SiteController::class, 'destroy'])->name('sites.destroy');
+    // Internal pages
+    Route::post('/sites/{site}/crawl', [SiteController::class, 'recrawlPages'])->name('sites.recrawl');
+    Route::get('/sites/{site}/pages/{page}/edit', [SiteController::class, 'editPage'])->name('sites.page.edit');
+    Route::put('/sites/{site}/pages/{page}', [SiteController::class, 'updatePage'])->name('sites.page.update');
+    Route::delete('/sites/{site}/pages/{page}', [SiteController::class, 'destroyPage'])->name('sites.page.destroy');
 });

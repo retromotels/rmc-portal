@@ -7,36 +7,46 @@ use App\Models\SiteView;
 use Illuminate\Http\Request;
 
 /**
- * Public-facing microsites at /motel/{key}.
- *  - {key} = a published site's slug  -> public, indexable booking page
+ * Public-facing microsites at /motel/{key} and /motel/{key}/{page}.
+ *  - {key} = a published site's slug  -> public, indexable
  *  - {key} = a site's preview_token   -> private, noindex, password-gated
  */
 class PublicSiteController extends Controller
 {
     public function show(Request $r, string $key)
     {
-        // 1) Published public page (indexable)
-        $public = Site::where('published', true)->where('slug', $key)->first();
-        if ($public) {
-            $this->log($public, 'public', true, $r);
-            return response()->view('sites.show', [
-                'site' => $public, 'preview' => false, 'indexable' => true,
-            ]);
+        $res = $this->resolve($key);
+
+        if ($res['gate']) {
+            $this->log($res['site'], 'preview', false, $r);
+            return $this->gate($res['site']);
         }
 
-        // 2) Private preview by token
-        $site = Site::where('preview_token', $key)->firstOrFail();
+        if ($res['indexable']) $this->log($res['site'], 'public', true, $r);
 
-        if (!session()->get($this->unlockKey($site))) {
-            $this->log($site, 'preview', false, $r);      // gate view
-            return response()
-                ->view('sites.gate', ['site' => $site, 'error' => null])
-                ->header('X-Robots-Tag', 'noindex, nofollow');
+        return $this->render('sites.show', [
+            'site' => $res['site'], 'preview' => $res['preview'], 'indexable' => $res['indexable'],
+        ], $res['preview']);
+    }
+
+    public function page(Request $r, string $key, string $page)
+    {
+        $res = $this->resolve($key);
+
+        if ($res['gate']) {
+            $this->log($res['site'], 'preview', false, $r);
+            return $this->gate($res['site']);
         }
 
-        return response()
-            ->view('sites.show', ['site' => $site, 'preview' => true, 'indexable' => false])
-            ->header('X-Robots-Tag', 'noindex, nofollow');
+        $pg = $res['site']->pages()->where('slug', $page)->first();
+        abort_unless($pg, 404);
+        if (!$pg->visible && $res['indexable']) abort(404);
+
+        if ($res['indexable']) $this->log($res['site'], 'public', true, $r);
+
+        return $this->render('sites.page', [
+            'site' => $res['site'], 'page' => $pg, 'preview' => $res['preview'], 'indexable' => $res['indexable'],
+        ], $res['preview']);
     }
 
     public function unlock(Request $r, string $key)
@@ -45,14 +55,41 @@ class PublicSiteController extends Controller
         $entered = trim((string) $r->input('password'));
 
         if (strcasecmp($entered, $site->preview_password) !== 0) {
-            return response()
-                ->view('sites.gate', ['site' => $site, 'error' => 'That password is not correct.'], 422)
-                ->header('X-Robots-Tag', 'noindex, nofollow');
+            return $this->gate($site, 'That password is not correct.', 422);
         }
 
         session()->put($this->unlockKey($site), true);
-        $this->log($site, 'preview', true, $r);           // successful access
+        $this->log($site, 'preview', true, $r);
         return redirect('/motel/' . $site->preview_token);
+    }
+
+    /* -------- helpers -------- */
+
+    /** @return array{site:Site,preview:bool,indexable:bool,gate:bool} */
+    private function resolve(string $key): array
+    {
+        $public = Site::where('published', true)->where('slug', $key)->first();
+        if ($public) {
+            return ['site' => $public, 'preview' => false, 'indexable' => true, 'gate' => false];
+        }
+
+        $site = Site::where('preview_token', $key)->firstOrFail();
+        $unlocked = (bool) session()->get($this->unlockKey($site));
+        return ['site' => $site, 'preview' => true, 'indexable' => false, 'gate' => !$unlocked];
+    }
+
+    private function render(string $view, array $data, bool $preview)
+    {
+        $resp = response()->view($view, $data);
+        if ($preview) $resp->header('X-Robots-Tag', 'noindex, nofollow');
+        return $resp;
+    }
+
+    private function gate(Site $site, ?string $error = null, int $status = 200)
+    {
+        return response()
+            ->view('sites.gate', ['site' => $site, 'error' => $error], $status)
+            ->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
     private function unlockKey(Site $site): string

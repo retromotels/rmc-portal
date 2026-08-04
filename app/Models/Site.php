@@ -50,7 +50,26 @@ class Site extends Model
         return $this->hasMany(SiteView::class);
     }
 
+    public function pages(): HasMany
+    {
+        return $this->hasMany(SitePage::class)->orderBy('nav_order')->orderBy('id');
+    }
+
+    /** Visible internal pages for the microsite nav. */
+    public function menuPages()
+    {
+        return $this->pages->where('visible', true);
+    }
+
     /* -------- helpers -------- */
+
+    /** URL to the home page (or an internal page) under the right key (public slug vs preview token). */
+    public function urlFor(?SitePage $page, bool $preview): string
+    {
+        $key = $preview ? $this->preview_token : ($this->slug ?: $this->preview_token);
+        $base = url('/motel/' . $key);
+        return $page ? $base . '/' . $page->slug : $base;
+    }
 
     public static function freshToken(): string
     {

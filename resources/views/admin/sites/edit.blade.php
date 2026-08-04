@@ -119,6 +119,30 @@
     </div>
   </form>
 
+  {{-- Internal pages (crawled & mirrored) --}}
+  <div class="panel">
+    <h3>Internal pages</h3>
+    <p style="font-size:12.5px;color:#8a7d68;margin:0 0 12px">Mirrored from the property’s own menu. These appear in the microsite’s navigation (Home + these pages). Edit content, reorder, hide, or re-crawl to pick up new pages.</p>
+    <div class="share" style="margin-bottom:12px">
+      <form method="POST" action="{{ route('admin.sites.recrawl', $site) }}">@csrf<button class="lite" type="submit">↻ Re-crawl menu</button></form>
+      <span class="pill">{{ $site->pages->count() }} {{ Str::plural('page', $site->pages->count()) }}</span>
+    </div>
+    @forelse($site->pages as $p)
+      <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #efe7d8">
+        <span style="width:26px;text-align:center;color:#b0a189;font-size:13px">{{ $p->nav_order }}</span>
+        <div style="flex:1;min-width:0">
+          <b style="font-family:Oswald,sans-serif;font-size:14px">{{ $p->title }}</b>
+          @unless($p->visible)<span style="font-size:11px;color:#b23b2e;font-weight:700"> · hidden</span>@endunless
+          <div style="font-size:12px;color:#8a7d68">/{{ $p->slug }} @if($p->images) · {{ count($p->images) }} img @endif @if($p->body) · {{ Str::words(strip_tags($p->body), 8, '…') }} @endif</div>
+        </div>
+        <a class="lite" href="{{ route('admin.sites.page.edit', [$site, $p]) }}">Edit</a>
+        <form method="POST" action="{{ route('admin.sites.page.destroy', [$site, $p]) }}" onsubmit="return confirm('Remove this page?')">@csrf @method('DELETE')<button class="lite" type="submit">Delete</button></form>
+      </div>
+    @empty
+      <p style="font-size:13px;color:#8a7d68;margin:0">No internal pages were found in the site’s menu. Use “Re-crawl menu”, or the microsite will just be a single page.</p>
+    @endforelse
+  </div>
+
   {{-- Rescrape --}}
   <div class="panel">
     <h3>Source</h3>
