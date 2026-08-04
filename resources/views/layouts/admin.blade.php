@@ -18,6 +18,7 @@
       <a href="{{ route('admin.overview') }}" class="{{ request()->routeIs('admin.overview') ? 'active' : '' }}"><span class="ic">📊</span>Overview</a>
       <a href="{{ route('admin.motels') }}" class="{{ request()->routeIs('admin.motel*') ? 'active' : '' }}"><span class="ic">🏨</span>Motels</a>
       <a href="{{ route('admin.policies') }}" class="{{ request()->routeIs('admin.policies') ? 'active' : '' }}"><span class="ic">📄</span>Signed Policies</a>
+      <a href="{{ route('admin.sites.index') }}" class="{{ request()->routeIs('admin.sites.*') ? 'active' : '' }}"><span class="ic">🌐</span>Site Builder</a>
     </nav>
     <div class="sb-foot">
       <div class="who">{{ auth()->user()->name }}</div><div class="prop">{{ auth()->user()->email }}</div>

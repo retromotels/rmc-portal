@@ -15,6 +15,17 @@ return [
     // Founding-member discount (toggle from the admin later if you wish)
     'founding' => ['active' => true, 'pct' => 50],
 
+    /*
+    | Microsite themes for the admin Site Builder. Each is an "inspired" style
+    | (palette / typography / layout feel) named after the reference site.
+    */
+    'site_themes' => [
+        'seasea' => ['label' => 'Sea Sea', 'ref' => 'https://seaseahotel.com/', 'blurb' => 'Coastal · airy · elegant serif', 'accent' => '#2f6f7e', 'sand' => '#f3ede2'],
+        'surf'   => ['label' => 'Surf Hotel', 'ref' => 'https://www.surfhotel.com.au/', 'blurb' => 'Bright · retro-surf · warm', 'accent' => '#e2683c', 'sand' => '#fbf4e9'],
+        'roy'    => ['label' => 'The Roy', 'ref' => 'https://www.theroy.com.au/', 'blurb' => 'Boutique · moody · refined', 'accent' => '#25332b', 'sand' => '#efe9df'],
+        'capon'  => ['label' => 'Capon Cottage', 'ref' => 'https://retromotels.com/capon-cottage-site/', 'blurb' => 'Cosy · heritage · handcrafted', 'accent' => '#8a5a3c', 'sand' => '#f6efe4'],
+    ],
+
     // Room bands, derived from total rooms
     'bands' => [
         'small' => ['label' => 'Up to 18 rooms', 'rooms' => '≤18', 'rev' => 62278, 'price' => ['standard' => 625, 'growth' => 995, 'full' => 1550]],

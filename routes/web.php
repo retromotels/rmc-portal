@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\PublicSiteController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\Admin\SiteController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', fn () => redirect()->route('login'));
+
+// Public microsites (published pages are indexable; preview tokens are noindex + password-gated)
+Route::get('/motel/{key}', [PublicSiteController::class, 'show'])->name('site.show');
+Route::post('/motel/{key}/unlock', [PublicSiteController::class, 'unlock'])->name('site.unlock');
 
 // Guest auth
 Route::middleware('guest')->group(function () {
@@ -58,4 +64,14 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/policies', [AdminController::class, 'policies'])->name('policies');
     Route::get('/policy/{document}/download', [AdminController::class, 'policyDownload'])->name('policy.download');
     Route::get('/upload/{upload}/download', [AdminController::class, 'uploadDownload'])->name('upload.download');
+
+    // Site Builder
+    Route::get('/sites', [SiteController::class, 'index'])->name('sites.index');
+    Route::get('/sites/create', [SiteController::class, 'create'])->name('sites.create');
+    Route::post('/sites', [SiteController::class, 'store'])->name('sites.store');
+    Route::get('/sites/{site}/edit', [SiteController::class, 'edit'])->name('sites.edit');
+    Route::put('/sites/{site}', [SiteController::class, 'update'])->name('sites.update');
+    Route::post('/sites/{site}/rescrape', [SiteController::class, 'rescrape'])->name('sites.rescrape');
+    Route::post('/sites/{site}/publish', [SiteController::class, 'togglePublish'])->name('sites.publish');
+    Route::delete('/sites/{site}', [SiteController::class, 'destroy'])->name('sites.destroy');
 });
