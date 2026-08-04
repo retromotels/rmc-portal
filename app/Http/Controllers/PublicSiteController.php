@@ -24,9 +24,7 @@ class PublicSiteController extends Controller
 
         if ($res['indexable']) $this->log($res['site'], 'public', true, $r);
 
-        return $this->render('sites.show', [
-            'site' => $res['site'], 'preview' => $res['preview'], 'indexable' => $res['indexable'],
-        ], $res['preview']);
+        return $this->renderSite($res, null);
     }
 
     public function page(Request $r, string $key, string $page)
@@ -44,9 +42,21 @@ class PublicSiteController extends Controller
 
         if ($res['indexable']) $this->log($res['site'], 'public', true, $r);
 
-        return $this->render('sites.page', [
-            'site' => $res['site'], 'page' => $pg, 'preview' => $res['preview'], 'indexable' => $res['indexable'],
-        ], $res['preview']);
+        return $this->renderSite($res, $pg);
+    }
+
+    /** Render the site with its bespoke per-theme template (falls back to the generic one). */
+    private function renderSite(array $res, $page)
+    {
+        $site = $res['site'];
+        $themeView = 'sites.themes.' . $site->theme;
+        $view = view()->exists($themeView) ? $themeView : ($page ? 'sites.page' : 'sites.show');
+
+        $resp = response()->view($view, [
+            'site' => $site, 'preview' => $res['preview'], 'indexable' => $res['indexable'], 'page' => $page,
+        ]);
+        if ($res['preview']) $resp->header('X-Robots-Tag', 'noindex, nofollow');
+        return $resp;
     }
 
     public function unlock(Request $r, string $key)
