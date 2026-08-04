@@ -267,7 +267,7 @@
 
 <footer class="sf-foot">
   <div class="sf-foot-name">{{ $site->name }}</div>
-  <small>Presented by the Retro Motel Collective{{-- --}}@if($indexable && $sfBookHref) · <a href="{{ $sfBookHref }}" target="_blank" rel="noopener">Official website</a>@endif</small>
+  <small>Presented by the Retro Motel Collective<span>@if($indexable && $sfBookHref) · <a href="{{ $sfBookHref }}" target="_blank" rel="noopener">Official website</a>@endif</span></small>
 </footer>
 
 </body>
