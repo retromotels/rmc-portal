@@ -69,9 +69,74 @@ class SiteScraper
 
         // ---- internal menu (same-site pages) ----
         $out['menu'] = $this->discoverMenu($html, $base, $url);
+        if (empty($out['menu'])) {
+            // JS-rendered nav? fall back to the site's XML sitemap.
+            $out['menu'] = $this->sitemapMenu($url);
+        }
 
         $out['ok'] = true;
         return $out;
+    }
+
+    /** Discover internal pages from the site's XML sitemap (works when the nav is JS-rendered). */
+    public function sitemapMenu(string $home): array
+    {
+        $base = $this->baseUrl($home);
+        $host = parse_url($home, PHP_URL_HOST);
+        $homePath = rtrim(parse_url($home, PHP_URL_PATH) ?: '/', '/') ?: '/';
+
+        $locs = [];
+        foreach (['/sitemap.xml', '/sitemap_index.xml', '/wp-sitemap.xml', '/sitemap-index.xml', '/page-sitemap.xml'] as $c) {
+            $xml = $this->fetch($base . $c);
+            if (!$xml) continue;
+            $found = $this->xmlLocs($xml);
+            $subs = array_values(array_filter($found, fn ($l) => preg_match('/\.xml(\?|$)/i', $l)));
+            if ($subs) {
+                foreach (array_slice($subs, 0, 3) as $sm) {
+                    if ($x2 = $this->fetch($sm)) $locs = array_merge($locs, $this->xmlLocs($x2));
+                }
+            } else {
+                $locs = $found;
+            }
+            if ($locs) break;
+        }
+
+        $out = [];
+        $seen = [];
+        foreach ($locs as $u) {
+            if (preg_match('/\.(xml|jpe?g|png|webp|pdf|gif)(\?|$)/i', $u)) continue;
+            $p = parse_url($u);
+            if (($p['host'] ?? '') !== $host) continue;
+            $path = rtrim($p['path'] ?? '/', '/') ?: '/';
+            if ($path === $homePath || $path === '/') continue;
+            if (preg_match('#/(wp-|category|tag|author|feed|cart|checkout|my-account|privacy|terms)#i', $path)) continue;
+
+            $key = strtolower($path);
+            if (isset($seen[$key])) continue;
+            $seen[$key] = true;
+
+            $seg = trim(substr(strrchr($path, '/'), 1));
+            if ($seg === '') continue;
+            $out[] = ['label' => ucwords(str_replace(['-', '_'], ' ', $seg)), 'url' => $u];
+            if (count($out) >= 8) break;
+        }
+        return $out;
+    }
+
+    private function fetch(string $url): ?string
+    {
+        try {
+            $r = Http::withHeaders(['User-Agent' => 'Mozilla/5.0 (compatible; RMCSiteBuilder/1.0)'])->timeout(12)->get($url);
+            return $r->ok() ? $r->body() : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    private function xmlLocs(string $xml): array
+    {
+        return preg_match_all('/<loc>\s*([^<\s]+)\s*<\/loc>/i', $xml, $m)
+            ? array_map('html_entity_decode', $m[1]) : [];
     }
 
     /** Discover same-domain internal pages from the site's nav/header menu. */
