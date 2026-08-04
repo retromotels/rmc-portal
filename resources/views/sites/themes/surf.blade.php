@@ -80,12 +80,12 @@
   .sf-gallery figure{ margin:0; height:min(72vh,640px); overflow:hidden; }
   .sf-gallery figure img{ width:100%; height:100%; object-fit:cover; transition:transform .6s ease; }
   .sf-gallery figure:hover img{ transform:scale(1.04); }
-  @media(max-width:720px){ .sf-gallery{ grid-template-columns:1fr; } .sf-gallery figure{ height:60vh; } }
+  @media (max-width:720px){ .sf-gallery{ grid-template-columns:1fr; } .sf-gallery figure{ height:60vh; } }
 
   /* amenities */
   .sf-amen{ list-style:none; margin:0; padding:0; columns:2; column-gap:60px; }
   .sf-amen li{ break-inside:avoid; padding:12px 0; border-bottom:1px solid rgba(17,17,17,.14); font-size:13px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; }
-  @media(max-width:640px){ .sf-amen{ columns:1; } }
+  @media (max-width:640px){ .sf-amen{ columns:1; } }
 
   /* map */
   .sf-map-embed{ border:1.5px solid var(--sf-ink); width:100%; aspect-ratio:16/7; }

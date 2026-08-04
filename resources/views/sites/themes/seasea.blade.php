@@ -82,7 +82,7 @@
     cursor:pointer;color:var(--ss-ink);
   }
   .ss-tab:hover{background:var(--ss-ink);color:var(--ss-sand)}
-  @media(max-width:820px){.ss-tabs{display:none}}
+  @media (max-width:820px){.ss-tabs{display:none}}
 
   /* collage */
   .ss-collage{
@@ -108,7 +108,7 @@
   .ss-rise{margin-top:-14px}
   .ss-rot-a{transform:rotate(-2deg)}
   .ss-rot-b{transform:rotate(2deg)}
-  @media(max-width:640px){
+  @media (max-width:640px){
     .ss-w-s,.ss-w-m,.ss-w-l{width:100%}
     .ss-drop,.ss-rise{margin-top:0}
     .ss-rot-a,.ss-rot-b{transform:none}
@@ -148,7 +148,7 @@
   .ss-amen{list-style:none;margin:0;padding:0;max-width:560px;columns:2;column-gap:34px}
   .ss-amen li{margin:0 0 8px;break-inside:avoid}
   .ss-amen li::before{content:"— ";opacity:.6}
-  @media(max-width:520px){.ss-amen{columns:1}}
+  @media (max-width:520px){.ss-amen{columns:1}}
 
   /* map */
   .ss-map-frame{border:1px solid var(--ss-ink);max-width:820px}

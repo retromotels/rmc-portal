@@ -117,7 +117,7 @@ a{color:inherit;}
 .cap-foot-meta a{color:var(--cap-rust);}
 .cap-foot-official{font-size:13px;}
 
-@media(max-width:820px){
+@media (max-width:820px){
   .cap-nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:var(--cap-white);border-bottom:1px solid #ece1cf;padding:8px 24px 18px;}
   .cap-nav.cap-open{display:flex;}
   .cap-nav a{padding:12px 0;width:100%;border-bottom:1px solid #f1e7d7;}
@@ -127,7 +127,7 @@ a{color:inherit;}
   .cap-gal{grid-template-columns:repeat(2,1fr);}
   .cap-gal figure:nth-child(6n+1){grid-column:auto;}
 }
-@media(max-width:520px){
+@media (max-width:520px){
   .cap-book-grid{grid-template-columns:1fr;}
   .cap-gal{grid-template-columns:1fr;}
 }
