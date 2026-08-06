@@ -26,6 +26,70 @@ return [
         'capon'  => ['label' => 'Capon Cottage', 'ref' => 'https://retromotels.com/capon-cottage-site/', 'blurb' => 'Cosy · heritage · handcrafted', 'accent' => '#8a5a3c', 'sand' => '#f6efe4'],
     ],
 
+    /*
+    | Booking.com listing-quality checklist for the admin analyzer. Grouped
+    | best-practice items. An 'auto' key means the analyzer can pre-tick it
+    | from scraped data when the listing page is readable.
+    */
+    'listing_checklist' => [
+        'Photos & imagery' => [
+            ['key' => 'photos_present', 'label' => 'Listing has photos uploaded', 'auto' => 'photos_present'],
+            ['key' => 'photos_count', 'label' => 'At least 24 high-quality photos', 'hint' => 'Booking.com rewards 24+ photos with better ranking and conversion.', 'auto' => 'photos_count'],
+            ['key' => 'photo_exterior', 'label' => 'Exterior / facade photo included'],
+            ['key' => 'photo_rooms', 'label' => 'Every room type is photographed'],
+            ['key' => 'photo_bathroom', 'label' => 'Bathroom photos included'],
+            ['key' => 'photo_amenities', 'label' => 'Key amenities shown (pool, dining, parking…)'],
+            ['key' => 'photo_hires', 'label' => 'Photos are high-resolution & landscape (min 2048px)'],
+            ['key' => 'photo_clean', 'label' => 'No watermarks, text overlays or collages'],
+        ],
+        'Property content' => [
+            ['key' => 'name_ok', 'label' => 'Property name is correct & consistent', 'auto' => 'name_present'],
+            ['key' => 'desc_present', 'label' => 'Property description is complete', 'auto' => 'description_present'],
+            ['key' => 'desc_usp', 'label' => 'Description highlights unique selling points'],
+            ['key' => 'desc_area', 'label' => 'Nearby landmarks & transport are described'],
+            ['key' => 'property_type', 'label' => 'Property type / category is accurate'],
+            ['key' => 'house_rules', 'label' => 'House rules are clear (smoking, parties, quiet hours)'],
+        ],
+        'Rooms & rates' => [
+            ['key' => 'room_types', 'label' => 'All room types are configured'],
+            ['key' => 'occupancy', 'label' => 'Occupancy & bed configuration are correct'],
+            ['key' => 'rates_loaded', 'label' => 'Rates & availability loaded 12–24 months ahead'],
+            ['key' => 'rate_plans', 'label' => 'Multiple rate plans (flexible + non-refundable)'],
+            ['key' => 'promotions', 'label' => 'At least one active deal / promotion'],
+            ['key' => 'price_parity', 'label' => 'Rates in parity with other channels & direct'],
+            ['key' => 'price_visible', 'label' => 'A live price is showing on the listing', 'auto' => 'price_visible'],
+        ],
+        'Facilities & amenities' => [
+            ['key' => 'facilities_complete', 'label' => 'All facilities / amenities ticked accurately'],
+            ['key' => 'wifi', 'label' => 'Wi-Fi details set (free/paid, coverage)'],
+            ['key' => 'parking', 'label' => 'Parking information set'],
+            ['key' => 'breakfast', 'label' => 'Breakfast / meal options configured'],
+            ['key' => 'checkinout', 'label' => 'Check-in / check-out times set'],
+            ['key' => 'accessibility', 'label' => 'Accessibility features listed (if applicable)'],
+        ],
+        'Policies & setup' => [
+            ['key' => 'cancellation', 'label' => 'Cancellation policy is set'],
+            ['key' => 'payment', 'label' => 'Payment / prepayment options configured'],
+            ['key' => 'children_beds', 'label' => 'Children & extra-bed policy set'],
+            ['key' => 'pets', 'label' => 'Pet policy set'],
+            ['key' => 'taxes', 'label' => 'Taxes & fees configured correctly'],
+            ['key' => 'licence', 'label' => 'Licence / registration number added (if required)'],
+        ],
+        'Location' => [
+            ['key' => 'map_pin', 'label' => 'Map pin is accurate', 'auto' => 'address_present'],
+            ['key' => 'address', 'label' => 'Full address is complete'],
+            ['key' => 'landmarks', 'label' => 'Nearby attractions & distances listed'],
+        ],
+        'Reviews & performance' => [
+            ['key' => 'review_present', 'label' => 'A guest review score is showing', 'auto' => 'review_present'],
+            ['key' => 'review_good', 'label' => 'Review score is 8.0+ (or trending up)', 'auto' => 'review_good'],
+            ['key' => 'review_replies', 'label' => 'Recent guest reviews have been responded to'],
+            ['key' => 'response_time', 'label' => 'Message response time is fast (under 1 day)'],
+            ['key' => 'content_score', 'label' => 'Booking.com content / quality score is high'],
+            ['key' => 'genius', 'label' => 'Enrolled in the Genius programme (if suitable)'],
+        ],
+    ],
+
     // Room bands, derived from total rooms
     'bands' => [
         'small' => ['label' => 'Up to 18 rooms', 'rooms' => '≤18', 'rev' => 62278, 'price' => ['standard' => 625, 'growth' => 995, 'full' => 1550]],

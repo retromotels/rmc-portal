@@ -9,6 +9,7 @@ use App\Http\Controllers\DetailsController;
 use App\Http\Controllers\PublicSiteController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\Admin\SiteController;
+use App\Http\Controllers\Admin\ListingController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -80,4 +81,13 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/sites/{site}/pages/{page}/edit', [SiteController::class, 'editPage'])->name('sites.page.edit');
     Route::put('/sites/{site}/pages/{page}', [SiteController::class, 'updatePage'])->name('sites.page.update');
     Route::delete('/sites/{site}/pages/{page}', [SiteController::class, 'destroyPage'])->name('sites.page.destroy');
+
+    // Booking listing analyzer
+    Route::get('/listings', [ListingController::class, 'index'])->name('listings.index');
+    Route::get('/listings/create', [ListingController::class, 'create'])->name('listings.create');
+    Route::post('/listings', [ListingController::class, 'store'])->name('listings.store');
+    Route::get('/listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
+    Route::put('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
+    Route::post('/listings/{listing}/reanalyze', [ListingController::class, 'reanalyze'])->name('listings.reanalyze');
+    Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
 });
