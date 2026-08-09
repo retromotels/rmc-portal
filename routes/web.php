@@ -102,6 +102,7 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
 
     // Email outbox (preview of queued mail)
     Route::get('/outbox', [OutboxController::class, 'index'])->name('outbox.index');
+    Route::post('/outbox/flush', [OutboxController::class, 'flush'])->name('outbox.flush');
     Route::get('/outbox/{outbox}', [OutboxController::class, 'show'])->name('outbox.show');
 
     // Booking listing analyzer

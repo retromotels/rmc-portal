@@ -14,8 +14,31 @@ return [
 
     // Where new-signup + health-check alerts go, and the from address for outgoing mail.
     'admin_emails' => ['jeremy@retromotels.com', 'luke@retromotels.com'],
-    'mail_from'    => ['address' => 'hello@retromotels.com', 'name' => 'Retro Motel Collective'],
+    'mail_from'    => ['address' => env('MAIL_FROM_ADDRESS', 'hello@retromotels.com'), 'name' => env('MAIL_FROM_NAME', 'Retro Motel Collective')],
     'pending_reminder_days' => 7,
+
+    /*
+    | Live sending via SendGrid. Set RMC_MAIL_LIVE=true + SENDGRID_API_KEY in
+    | .env to actually send (otherwise messages just queue in the Outbox).
+    | Per-type SendGrid dynamic-template IDs make the emails editable in the
+    | SendGrid dashboard; when a template id is blank the rendered HTML is sent.
+    */
+    'mail_live' => env('RMC_MAIL_LIVE', false),
+    'sendgrid'  => [
+        'key'       => env('SENDGRID_API_KEY'),
+        'templates' => [
+            'welcome'          => env('SG_TPL_WELCOME'),
+            'admin_new_signup' => env('SG_TPL_ADMIN_SIGNUP'),
+            'pending_reminder' => env('SG_TPL_PENDING'),
+            'password_reset'   => env('SG_TPL_RESET'),
+            'health_request'   => env('SG_TPL_HEALTH'),
+        ],
+    ],
+    'twilio' => [
+        'sid'   => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from'  => env('TWILIO_FROM'),
+    ],
 
     // Requestable health-check services (the website check is interactive, separate).
     'health_requests' => [

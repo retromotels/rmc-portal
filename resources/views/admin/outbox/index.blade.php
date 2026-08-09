@@ -13,7 +13,17 @@
   .ob-tbl a{color:var(--teal-d,#2f6f7e);font-weight:600;text-decoration:none}
 </style>
 
-<div class="ob-note">📭 These are the emails the system has generated. Sending isn’t connected yet — everything is <b>queued</b> so you can preview it. Once SendGrid is wired up, queued messages will actually send.</div>
+@if(session('status'))<div class="status">{{ session('status') }}</div>@endif
+<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap">
+  <div class="ob-note" style="margin:0;flex:1">
+    @if($live)
+      ✅ Live sending is <b>ON</b> (SendGrid). New emails send automatically; anything still queued can be sent below.
+    @else
+      📭 Live sending is <b>OFF</b> — emails are <b>queued</b> here for preview. Add your SendGrid key and set <code>RMC_MAIL_LIVE=true</code> to send.
+    @endif
+  </div>
+  <form method="POST" action="{{ route('admin.outbox.flush') }}">@csrf<button class="lite" type="submit" style="border:1px solid #e2d6c2;background:#fff;border-radius:9px;padding:9px 14px;font-weight:600;cursor:pointer">Send queued now</button></form>
+</div>
 
 <table class="ob-tbl">
   <thead><tr><th>When</th><th>Type</th><th>To</th><th>Subject</th><th>Status</th><th></th></tr></thead>
