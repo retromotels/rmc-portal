@@ -21,6 +21,7 @@
       <a href="{{ route('admin.policies') }}" class="{{ request()->routeIs('admin.policies') ? 'active' : '' }}"><span class="ic">📄</span>Signed Policies</a>
       <a href="{{ route('admin.listings.index') }}" class="{{ request()->routeIs('admin.listings.*') ? 'active' : '' }}"><span class="ic">✅</span>Listing Check</a>
       <a href="{{ route('admin.content.edit') }}" class="{{ request()->routeIs('admin.content.*') ? 'active' : '' }}"><span class="ic">📰</span>Content</a>
+      <a href="{{ route('admin.outbox.index') }}" class="{{ request()->routeIs('admin.outbox.*') ? 'active' : '' }}"><span class="ic">📧</span>Outbox</a>
     </nav>
     <div class="sb-foot">
       <div class="who">{{ auth()->user()->name }}</div><div class="prop">{{ auth()->user()->email }}</div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Outbox;
 use App\Services\PolicyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,6 +67,10 @@ class AuthController extends Controller
 
         // Generate + store the three digitally-signed policy PDFs.
         $policies->generateForUser($user);
+
+        // Queue the welcome email + notify head office (recorded in the outbox).
+        Outbox::welcome($user);
+        Outbox::adminNewSignup($user);
 
         Auth::login($user);
         $request->session()->regenerate();

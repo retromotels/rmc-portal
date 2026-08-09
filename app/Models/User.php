@@ -14,7 +14,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'role', 'motel', 'band', 'tier',
         'phone', 'bio', 'photo_path', 'loc', 'details_complete', 'founding',
-        'cancel_requested_at',
+        'cancel_requested_at', 'pending_reminded_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -27,6 +27,7 @@ class User extends Authenticatable
             'details_complete'    => 'boolean',
             'founding'            => 'boolean',
             'cancel_requested_at' => 'datetime',
+            'pending_reminded_at' => 'datetime',
         ];
     }
 

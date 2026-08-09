@@ -12,6 +12,11 @@ return [
 
     'onboard_fee' => 1500,
 
+    // Where new-signup + health-check alerts go, and the from address for outgoing mail.
+    'admin_emails' => ['jeremy@retromotels.com', 'luke@retromotels.com'],
+    'mail_from'    => ['address' => 'hello@retromotels.com', 'name' => 'Retro Motel Collective'],
+    'pending_reminder_days' => 7,
+
     // Founding-member discount (toggle from the admin later if you wish)
     'founding' => ['active' => true, 'pct' => 50],
 

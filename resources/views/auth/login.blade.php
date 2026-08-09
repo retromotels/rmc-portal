@@ -14,6 +14,7 @@
       <label class="fld"><span>Password</span><input name="password" type="password" autocomplete="current-password" required></label>
       <label class="switchrow" style="margin-top:12px"><input type="checkbox" name="remember"> Remember me</label>
       @error('email')<div class="err">{{ $message }}</div>@enderror
+      <div class="mini" style="margin:4px 0 12px;text-align:right"><a href="{{ route('password.request') }}">Forgot password?</a></div>
       <button class="btn btn-primary btn-block" type="submit">Log in</button>
     </form>
     <div class="mini" style="margin-top:16px">New operator? <a href="{{ route('register') }}">Join the collective →</a></div>

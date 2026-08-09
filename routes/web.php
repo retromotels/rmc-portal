@@ -7,9 +7,11 @@ use App\Http\Controllers\CheckerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailsController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\ListingController;
+use App\Http\Controllers\Admin\OutboxController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::get('/forgot-password', [PasswordController::class, 'showForgot'])->name('password.request');
+    Route::post('/forgot-password', [PasswordController::class, 'sendReset'])->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordController::class, 'showReset'])->name('password.reset');
+    Route::post('/reset-password', [PasswordController::class, 'reset'])->name('password.update');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
@@ -68,6 +75,10 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     // Admin-controlled property content
     Route::get('/content', [ContentController::class, 'edit'])->name('content.edit');
     Route::put('/content', [ContentController::class, 'update'])->name('content.update');
+
+    // Email outbox (preview of queued mail)
+    Route::get('/outbox', [OutboxController::class, 'index'])->name('outbox.index');
+    Route::get('/outbox/{outbox}', [OutboxController::class, 'show'])->name('outbox.show');
 
     // Booking listing analyzer
     Route::get('/listings', [ListingController::class, 'index'])->name('listings.index');
