@@ -159,3 +159,16 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal)}
 .prop-switch select{border:none;background:none;font-family:Oswald,sans-serif;font-size:14px;font-weight:600;color:#2d2837;cursor:pointer;outline:none;max-width:240px}
 .prop-switch .ps-add{width:32px;height:32px;display:grid;place-items:center;background:var(--coral,#ee6a5a);color:#fff;border-radius:9px;text-decoration:none;font-size:18px;font-weight:700}
 .prop-switch .ps-add:hover{filter:brightness(1.05)}
+
+/* ---- Admin view-as + preview bar ---- */
+.view-as{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.view-as .va-lbl{color:#8a7d68;font-weight:600}
+.view-as a{text-decoration:none;font-weight:700;font-size:12px;color:#2f6f7e;border:1px solid #cfe0dd;border-radius:8px;padding:5px 10px}
+.view-as a:hover{background:#eaf4f2}
+.preview-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#1a1526;color:#f3ede2;padding:10px 20px;font-size:13px}
+.preview-bar b{color:#ffc078}
+.preview-bar .pv-tiers{display:flex;gap:6px}
+.preview-bar .pv-tiers a{color:#f3ede2;text-decoration:none;font-weight:600;border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:3px 9px;font-size:12px}
+.preview-bar .pv-tiers a.on{background:#ee6a5a;border-color:#ee6a5a}
+.preview-bar form{margin-left:auto}
+.preview-bar button{background:none;border:1px solid rgba(255,255,255,.4);color:#f3ede2;border-radius:7px;padding:5px 12px;font-weight:600;cursor:pointer;font-size:12px}

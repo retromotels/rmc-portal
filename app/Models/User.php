@@ -16,6 +16,7 @@ class User extends Authenticatable
         'motel', 'band', 'tier',
         'phone', 'bio', 'photo_path', 'loc', 'details_complete', 'founding',
         'cancel_requested_at', 'pending_reminded_at',
+        'claim_token', 'claimed_at', 'created_by_admin',
     ];
 
     protected $hidden = ['password', 'remember_token'];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -15,6 +16,21 @@ class ResolveProperty
     public function handle(Request $request, Closure $next)
     {
         $u = $request->user();
+
+        // Admin "view as property" preview across tiers.
+        if ($u && $u->isAdmin() && in_array(session('admin_preview_tier'), ['standard', 'growth', 'full'], true)) {
+            $tier = session('admin_preview_tier');
+            $band = ['standard' => 'small', 'growth' => 'mid', 'full' => 'large'][$tier];
+            $preview = new User([
+                'name' => $u->name, 'role' => 'owner', 'motel' => 'Preview Property',
+                'band' => $band, 'tier' => $tier, 'details_complete' => true,
+            ]);
+            $preview->id = 0;
+            $request->attributes->set('currentProperty', $preview);
+            View::share('currentProperty', $preview);
+            View::share('adminPreview', $tier);
+            return $next($request);
+        }
 
         if ($u && !$u->isAdmin()) {
             $props   = $u->accountProperties();

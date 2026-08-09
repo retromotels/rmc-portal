@@ -17,6 +17,15 @@ return [
     'mail_from'    => ['address' => 'hello@retromotels.com', 'name' => 'Retro Motel Collective'],
     'pending_reminder_days' => 7,
 
+    // Requestable health-check services (the website check is interactive, separate).
+    'health_requests' => [
+        'ota'     => ['label' => 'OTA health check', 'blurb' => 'A free review of your Booking.com / Expedia listings against best practice.', 'icon' => '🏨'],
+        'seo'     => ['label' => 'SEO health check', 'blurb' => 'We review your website’s search visibility and send back plain-English feedback.', 'icon' => '🔍'],
+        'gmb'     => ['label' => 'Google My Business audit', 'blurb' => 'A check of your Google Business Profile — accuracy, photos, reviews and posts.', 'icon' => '📍'],
+        'reviews' => ['label' => 'Review ranking check', 'blurb' => 'How your guest reviews and ratings compare, and how to lift them.', 'icon' => '⭐'],
+        'social'  => ['label' => 'Social / web content package', 'blurb' => 'A tailored plan for social posts and website content to keep bookings coming.', 'icon' => '📣'],
+    ],
+
     // Founding-member discount (toggle from the admin later if you wish)
     'founding' => ['active' => true, 'pct' => 50],
 

@@ -24,7 +24,7 @@
     <nav class="nav">
       <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><span class="ic">◎</span>Dashboard</a>
       <a href="{{ route('registration.index') }}" class="{{ request()->routeIs('registration.index') ? 'active' : '' }}"><span class="ic">📝</span>Property Setup @if($pending)<span class="cnt">{{ $pending }}</span>@endif</a>
-      <a href="{{ route('checker') }}" class="{{ request()->routeIs('checker') ? 'active' : '' }}"><span class="ic">🔍</span>Website Checker</a>
+      <a href="{{ route('health') }}" class="{{ request()->routeIs('health') ? 'active' : '' }}"><span class="ic">🩺</span>Health Check</a>
       <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}"><span class="ic">ℹ️</span>About Us</a>
       <a href="{{ route('faq') }}" class="{{ request()->routeIs('faq') ? 'active' : '' }}"><span class="ic">❓</span>FAQ</a>
       @foreach(['✨|AI Assist','📤|My Documents','📇|Supplier Directory','🎙️|Monthly Roundtable','👥|Community','📚|Resource Library'] as $s)
@@ -39,6 +39,17 @@
     </div>
   </aside>
   <main class="main">
+    @isset($adminPreview)
+      <div class="preview-bar">
+        <span>👁 Previewing the portal as <b>{{ ucfirst($adminPreview) }}</b> tier</span>
+        <span class="pv-tiers">
+          @foreach(['standard' => 'Standard', 'growth' => 'Growth', 'full' => 'Full'] as $t => $lbl)
+            <a href="{{ route('admin.preview', $t) }}" class="{{ $adminPreview === $t ? 'on' : '' }}">{{ $lbl }}</a>
+          @endforeach
+        </span>
+        <form method="POST" action="{{ route('preview.exit') }}">@csrf<button type="submit">Exit preview →</button></form>
+      </div>
+    @endisset
     <div class="topbar">
       <h2>@yield('title')</h2>
       @isset($accountProperties)

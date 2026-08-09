@@ -29,7 +29,15 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(Auth::user()->isAdmin() ? route('admin.overview') : route('dashboard'));
+        $u = Auth::user();
+        if (!$u->isAdmin()) {
+            \App\Models\ActivityLog::create([
+                'user_id' => $u->id, 'account_id' => $u->accountId(),
+                'path' => 'login', 'label' => 'Logged in', 'ip' => $request->ip(), 'created_at' => now(),
+            ]);
+        }
+
+        return redirect()->intended($u->isAdmin() ? route('admin.overview') : route('dashboard'));
     }
 
     public function showRegister()
