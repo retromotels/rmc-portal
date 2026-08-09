@@ -8,7 +8,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Middleware\ResolveProperty;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\OutboxController;
@@ -39,10 +41,15 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Authenticated owner portal
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', ResolveProperty::class])->group(function () {
 
     Route::get('/details', [DetailsController::class, 'show'])->name('details.show');
     Route::post('/details', [DetailsController::class, 'save'])->name('details.save');
+
+    // Multiple properties per account
+    Route::post('/properties/switch', [PropertyController::class, 'switch'])->name('properties.switch');
+    Route::get('/properties/add', [PropertyController::class, 'add'])->name('properties.add');
+    Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

@@ -11,7 +11,7 @@ class RegistrationController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user()->load('registrations', 'uploads');
+        $user = $this->currentProperty()->load('registrations', 'uploads');
 
         // Property setup shows every section (A–H); A & B were captured at sign-up.
         $sections = collect(config('rmc.sections'))->map(fn ($s, $id) => $s + ['id' => $id]);
@@ -27,7 +27,7 @@ class RegistrationController extends Controller
     {
         $cfg = config("rmc.sections.$section");
         abort_unless($cfg, 404);
-        $user = $request->user();
+        $user = $this->currentProperty();
 
         // Required non-file fields only (all uploads are optional).
         $rules = [];
@@ -58,7 +58,7 @@ class RegistrationController extends Controller
     {
         $cfg = config("rmc.sections.$section");
         abort_unless($cfg, 404);
-        $user = $request->user();
+        $user = $this->currentProperty();
 
         $request->validate([
             'file'   => ['required', 'array'],
@@ -84,14 +84,14 @@ class RegistrationController extends Controller
 
     public function download(Request $request, Upload $upload)
     {
-        // Owners may only download their own files.
-        abort_unless($upload->user_id === $request->user()->id, 403);
+        // Owners may only download files belonging to one of their properties.
+        abort_unless($this->accountPropertyIds()->contains($upload->user_id), 403);
         return Storage::disk('local')->download($upload->path, $upload->original_name);
     }
 
     public function deleteFile(Request $request, Upload $upload)
     {
-        abort_unless($upload->user_id === $request->user()->id, 403);
+        abort_unless($this->accountPropertyIds()->contains($upload->user_id), 403);
         Storage::disk('local')->delete($upload->path);
         $section = $upload->section;
         $upload->delete();

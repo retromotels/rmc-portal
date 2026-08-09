@@ -12,7 +12,8 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'motel', 'band', 'tier',
+        'name', 'email', 'password', 'role', 'account_id', 'current_property_id',
+        'motel', 'band', 'tier',
         'phone', 'bio', 'photo_path', 'loc', 'details_complete', 'founding',
         'cancel_requested_at', 'pending_reminded_at',
     ];
@@ -49,6 +50,24 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /* ---- Multi-property account ---- */
+
+    /** The id that groups this account's properties (owner row id). */
+    public function accountId(): int
+    {
+        return $this->account_id ?: $this->id;
+    }
+
+    /** All property rows under this account (its own row + any children). */
+    public function accountProperties()
+    {
+        $aid = $this->accountId();
+        return self::where('role', 'owner')
+            ->where(fn ($q) => $q->where('id', $aid)->orWhere('account_id', $aid))
+            ->orderBy('id')
+            ->get();
     }
 
     /* ---- Portal helpers ---- */

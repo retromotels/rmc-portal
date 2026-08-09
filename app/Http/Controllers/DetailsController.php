@@ -16,13 +16,13 @@ class DetailsController extends Controller
         return view('details', [
             'A' => config('rmc.sections.A'),
             'B' => config('rmc.sections.B'),
-            'user' => auth()->user(),
+            'user' => $this->currentProperty(),
         ]);
     }
 
     public function save(Request $request)
     {
-        $user = $request->user();
+        $user = $this->currentProperty();
 
         $aFields = collect(config('rmc.sections.A.fields'));
         $bFields = collect(config('rmc.sections.B.fields'));

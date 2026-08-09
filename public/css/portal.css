@@ -150,3 +150,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal)}
 .welcome-banner{background:linear-gradient(120deg,#fff2e0,#ffe9d6);border:1px solid #f0d9b5;border-radius:16px;padding:22px 24px;margin-bottom:20px}
 .welcome-banner h3{font-family:Oswald,sans-serif;font-size:22px;margin:0 0 6px;color:#7a3d1a}
 .welcome-banner p{margin:0;font-size:15px;line-height:1.6;color:#5a4632}
+
+/* ---- Property switcher (topbar) ---- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.prop-switch{display:flex;align-items:center;gap:8px}
+.prop-switch form{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e2d6c2;border-radius:10px;padding:6px 10px}
+.prop-switch .ps-ic{font-size:15px}
+.prop-switch select{border:none;background:none;font-family:Oswald,sans-serif;font-size:14px;font-weight:600;color:#2d2837;cursor:pointer;outline:none;max-width:240px}
+.prop-switch .ps-add{width:32px;height:32px;display:grid;place-items:center;background:var(--coral,#ee6a5a);color:#fff;border-radius:9px;text-decoration:none;font-size:18px;font-weight:700}
+.prop-switch .ps-add:hover{filter:brightness(1.05)}

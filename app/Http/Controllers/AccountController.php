@@ -11,7 +11,7 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         return view('account', [
-            'user'     => $request->user()->load('policyDocuments'),
+            'user' => $this->currentProperty()->load('policyDocuments'),
         ]);
     }
 
@@ -26,28 +26,34 @@ class AccountController extends Controller
             'photo' => ['nullable', 'image', 'max:5120'],
         ]);
 
-        $user = $request->user();
+        $property = $this->currentProperty();
 
         if ($request->hasFile('photo')) {
-            if ($user->photo_path) Storage::disk('public')->delete($user->photo_path);
+            if ($property->photo_path) Storage::disk('public')->delete($property->photo_path);
             $data['photo_path'] = $request->file('photo')->store('avatars', 'public');
         }
         unset($data['photo']);
 
-        $user->update($data);
+        $property->update($data);
+
+        // Keep the account owner's name in sync (name is account-level).
+        $account = auth()->user();
+        if ($account->id !== $property->id) {
+            $account->update(['name' => $data['name']]);
+        }
 
         return back()->with('status', 'Profile saved.');
     }
 
     public function policyDownload(Request $request, PolicyDocument $document)
     {
-        abort_unless($document->user_id === $request->user()->id, 403);
+        abort_unless($this->accountPropertyIds()->contains($document->user_id), 403);
         return Storage::disk('local')->download($document->path, $document->title . '.pdf');
     }
 
     public function requestCancellation(Request $request)
     {
-        $request->user()->update(['cancel_requested_at' => now()]);
+        $this->currentProperty()->update(['cancel_requested_at' => now()]);
         return back()->with('status', 'Cancellation request sent to RMC. Our team will confirm by email.');
     }
 }

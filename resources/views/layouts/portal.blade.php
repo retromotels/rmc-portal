@@ -14,8 +14,9 @@
 <body>
 @php
     $u = auth()->user();
+    $cp = $currentProperty ?? $u;
     $pending = collect(config('rmc.sections'))->reject(fn ($s) => $s['signup'] ?? false)
-        ->keys()->filter(fn ($id) => !$u->sectionComplete($id))->count();
+        ->keys()->filter(fn ($id) => !$cp->sectionComplete($id))->count();
 @endphp
 <div id="app">
   <aside class="sidebar">
@@ -33,12 +34,27 @@
       <a href="{{ route('account') }}" class="{{ request()->routeIs('account') ? 'active' : '' }}"><span class="ic">⚙️</span>Account</a>
     </nav>
     <div class="sb-foot">
-      <div class="who">{{ $u->name }}</div><div class="prop">{{ $u->motel }}</div>
+      <div class="who">{{ $u->name }}</div><div class="prop">{{ $cp->motel }}</div>
       <form method="POST" action="{{ route('logout') }}">@csrf<button class="lo" type="submit">Log out →</button></form>
     </div>
   </aside>
   <main class="main">
-    <div class="topbar"><h2>@yield('title')</h2></div>
+    <div class="topbar">
+      <h2>@yield('title')</h2>
+      @isset($accountProperties)
+        <div class="prop-switch">
+          <form method="POST" action="{{ route('properties.switch') }}" id="propForm">@csrf
+            <span class="ps-ic">🏨</span>
+            <select name="property_id" onchange="document.getElementById('propForm').submit()">
+              @foreach($accountProperties as $p)
+                <option value="{{ $p->id }}" @selected($cp->id === $p->id)>{{ $p->motel ?: 'Untitled property' }}</option>
+              @endforeach
+            </select>
+          </form>
+          <a class="ps-add" href="{{ route('properties.add') }}" title="Add a property">＋</a>
+        </div>
+      @endisset
+    </div>
     <div class="content">
       @if(session('status'))<div class="status">{{ session('status') }}</div>@endif
       @yield('content')

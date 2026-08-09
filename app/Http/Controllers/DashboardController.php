@@ -6,7 +6,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user()->load('registrations', 'uploads');
+        $user = $this->currentProperty()->load('registrations', 'uploads');
 
         // C–H are the dashboard tasks (everything not collected at sign-up).
         $tasks = collect(config('rmc.sections'))
