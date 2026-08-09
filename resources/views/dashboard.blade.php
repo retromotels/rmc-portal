@@ -2,6 +2,14 @@
 @section('title', 'Dashboard')
 @section('content')
 
+@php $wb = \App\Models\Setting::get('welcome_banner', []); @endphp
+@if(!empty($wb['title']) || !empty($wb['copy']))
+  <div class="welcome-banner">
+    @if(!empty($wb['title']))<h3>{{ $wb['title'] }}</h3>@endif
+    @if(!empty($wb['copy']))<p>{!! nl2br(e($wb['copy'])) !!}</p>@endif
+  </div>
+@endif
+
 @unless($user->details_complete)
   <div class="banner">
     <span class="bic">📝</span>

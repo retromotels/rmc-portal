@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\ListingController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +47,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/website-checker', [CheckerController::class, 'index'])->name('checker');
 
+    Route::get('/about', [PageController::class, 'about'])->name('about');
+    Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::post('/account', [AccountController::class, 'update'])->name('account.update');
     Route::get('/account/policy/{document}', [AccountController::class, 'policyDownload'])->name('account.policy');
@@ -59,6 +64,10 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/policies', [AdminController::class, 'policies'])->name('policies');
     Route::get('/policy/{document}/download', [AdminController::class, 'policyDownload'])->name('policy.download');
     Route::get('/upload/{upload}/download', [AdminController::class, 'uploadDownload'])->name('upload.download');
+
+    // Admin-controlled property content
+    Route::get('/content', [ContentController::class, 'edit'])->name('content.edit');
+    Route::put('/content', [ContentController::class, 'update'])->name('content.update');
 
     // Booking listing analyzer
     Route::get('/listings', [ListingController::class, 'index'])->name('listings.index');
