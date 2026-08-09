@@ -1,0 +1,4 @@
+{{-- Retro Motels tile wordmark — matches retromotels.com. Pass ['lg' => true] for the large auth version. --}}
+<span class="rm-logo {{ ($lg ?? false) ? 'rm-lg' : '' }}" aria-label="Retro Motels">
+  <span class="rm-tl" style="background:#ffc078">R</span><span class="rm-tl" style="background:#ffe574">E</span><span class="rm-tl" style="background:#e0491d;color:#f8eed6">T</span><span class="rm-tl" style="background:#ffb3a7">R</span><span class="rm-tl" style="background:#c7a1f0">O</span><span class="rm-gap"></span><span class="rm-tl" style="background:#8ed2f4">M</span><span class="rm-tl" style="background:#8fe2b6">O</span><span class="rm-tl" style="background:#e0491d;color:#f8eed6">T</span><span class="rm-tl" style="background:#ff9c85">E</span><span class="rm-tl" style="background:#ffe574">L</span><span class="rm-tl" style="background:#ffb3a7">S</span>
+</span>

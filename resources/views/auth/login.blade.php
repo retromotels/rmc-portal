@@ -4,8 +4,8 @@
   <div class="sun"></div>
   <div class="auth-card">
     <div class="auth-sign">
-      <div class="neon">RETRO MOTEL</div>
-      <div class="neon aqua" style="font-size:22px">COLLECTIVE</div>
+      @include('partials.logo', ['lg' => true])
+      <div class="neon aqua" style="font-size:20px;margin-top:10px">COLLECTIVE</div>
       <span class="vac">● VACANCY</span>
     </div>
     <form method="POST" action="{{ route('login') }}">

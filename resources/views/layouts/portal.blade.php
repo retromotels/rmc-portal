@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Oswald:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="stylesheet" href="{{ asset('css/portal.css') }}">
 </head>
 <body>
@@ -18,7 +19,7 @@
 @endphp
 <div id="app">
   <aside class="sidebar">
-    <div class="sb-logo"><span class="neon">RETRO MOTEL</span><small>COLLECTIVE · MEMBER PORTAL</small></div>
+    <div class="sb-logo">@include('partials.logo')<small>COLLECTIVE · MEMBER PORTAL</small></div>
     <nav class="nav">
       <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><span class="ic">◎</span>Dashboard</a>
       <a href="{{ route('registration.index') }}" class="{{ request()->routeIs('registration.index') ? 'active' : '' }}"><span class="ic">📝</span>Property Setup @if($pending)<span class="cnt">{{ $pending }}</span>@endif</a>
