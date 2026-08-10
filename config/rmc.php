@@ -26,12 +26,14 @@ return [
     'mail_live' => env('RMC_MAIL_LIVE', false),
     'sendgrid'  => [
         'key'       => env('SENDGRID_API_KEY'),
+        // Live SendGrid dynamic-template IDs (created in the SendGrid dashboard,
+        // editable there). Not secret, so kept as defaults; override via .env if needed.
         'templates' => [
-            'welcome'          => env('SG_TPL_WELCOME'),
-            'admin_new_signup' => env('SG_TPL_ADMIN_SIGNUP'),
-            'pending_reminder' => env('SG_TPL_PENDING'),
-            'password_reset'   => env('SG_TPL_RESET'),
-            'health_request'   => env('SG_TPL_HEALTH'),
+            'welcome'          => env('SG_TPL_WELCOME', 'd-4faeea60f20948e58e4368d2eea17c94'),
+            'admin_new_signup' => env('SG_TPL_ADMIN_SIGNUP', 'd-960e8e2a8de74d12846f968bb801c7de'),
+            'pending_reminder' => env('SG_TPL_PENDING', 'd-d3d6915aca7d47e59ad93221437c365e'),
+            'password_reset'   => env('SG_TPL_RESET', 'd-bb124276de0344d0819e1d0919104523'),
+            'health_request'   => env('SG_TPL_HEALTH', 'd-a767337c59ef42628406c3eb20682b49'),
         ],
     ],
     'twilio' => [

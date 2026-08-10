@@ -31,6 +31,10 @@ class Mailer
 
         if ($templateId) {
             $payload['template_id'] = $templateId;
+            // Personalization-level subject sets the real email subject and
+            // overrides the template, so a template with a blank subject line
+            // still sends correctly. Also exposed as {{subject}} in the template.
+            $personalization['subject'] = $email->subject;
             $personalization['dynamic_template_data'] = ($email->meta ?? []) + ['subject' => $email->subject];
         } else {
             $payload['subject'] = $email->subject;
