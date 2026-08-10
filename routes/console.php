@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
 // Daily: remind owners who registered but never finished their details.
 // (Requires the server cron to run `php artisan schedule:run` every minute.)
-Schedule::command('rmc:pending-reminders')->dailyAt('09:00');
+Schedule::command('rmc:pending-reminders')->dailyAt('09:00')->timezone('Australia/Brisbane');
