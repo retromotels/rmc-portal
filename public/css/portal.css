@@ -172,3 +172,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal)}
 .preview-bar .pv-tiers a.on{background:#ee6a5a;border-color:#ee6a5a}
 .preview-bar form{margin-left:auto}
 .preview-bar button{background:none;border:1px solid rgba(255,255,255,.4);color:#f3ede2;border-radius:7px;padding:5px 12px;font-weight:600;cursor:pointer;font-size:12px}
+
+/* welcome banner with image */
+.welcome-banner.has-img{display:flex;gap:22px;align-items:center}
+.welcome-banner .wb-text{flex:1;min-width:0}
+.welcome-banner .wb-img{width:200px;height:120px;object-fit:cover;border-radius:12px;flex:none}
+@media (max-width:640px){ .welcome-banner.has-img{flex-direction:column-reverse;align-items:stretch} .welcome-banner .wb-img{width:100%} }

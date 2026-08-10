@@ -19,14 +19,21 @@
 
 @if(session('status'))<div class="status">{{ session('status') }}</div>@endif
 
-<form method="POST" action="{{ route('admin.content.update') }}">
+<form method="POST" action="{{ route('admin.content.update') }}" enctype="multipart/form-data">
   @csrf @method('PUT')
 
   <div class="panel">
     <h3>Dashboard welcome banner</h3>
-    <p class="hint">Shown at the top of every property’s dashboard. Leave both blank to hide the banner entirely.</p>
+    <p class="hint">Shown at the top of every property’s dashboard. Leave title + copy blank to hide the banner entirely.</p>
     <label class="fld"><span>Title</span><input name="banner_title" value="{{ $banner['title'] ?? '' }}" placeholder="Welcome to the collective!"></label>
     <label class="fld"><span>Copy</span><textarea name="banner_copy" rows="3" placeholder="Thank you for joining…">{{ $banner['copy'] ?? '' }}</textarea></label>
+    <label class="fld"><span>Banner image (optional)</span><input type="file" name="banner_image" accept="image/*"></label>
+    @if(!empty($banner['image']))
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <img src="{{ $banner['image'] }}" style="height:60px;border-radius:8px" onerror="this.style.display='none'">
+        <label style="font-size:13px"><input type="checkbox" name="banner_image_remove" value="1"> Remove current image</label>
+      </div>
+    @endif
   </div>
 
   <div class="panel">
@@ -34,7 +41,18 @@
     <p class="hint">Shown on the property portal’s “About Us” tab.</p>
     <label class="fld"><span>Title</span><input name="about_title" value="{{ $about['title'] ?? '' }}" placeholder="About the Retro Motel Collective"></label>
     <label class="fld"><span>Body</span><textarea name="about_body" rows="6">{{ $about['body'] ?? '' }}</textarea></label>
-    <label class="fld"><span>Image URLs (one per line)</span><textarea name="about_images" rows="3" placeholder="https://…/photo.jpg">{{ implode("\n", $about['images'] ?? []) }}</textarea></label>
+    <label class="fld"><span>Upload photos</span><input type="file" name="about_images[]" accept="image/*" multiple></label>
+    @if(!empty($about['images']))
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:4px 0 12px">
+        @foreach($about['images'] as $img)
+          <figure style="margin:0;position:relative;border-radius:10px;overflow:hidden">
+            <img src="{{ $img }}" style="width:100%;height:80px;object-fit:cover;display:block" onerror="this.closest('figure').style.display='none'">
+            <label style="position:absolute;left:5px;bottom:5px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 6px;border-radius:5px"><input type="checkbox" name="about_remove[]" value="{{ $img }}"> remove</label>
+          </figure>
+        @endforeach
+      </div>
+    @endif
+    <label class="fld"><span>…or paste image URLs (one per line)</span><textarea name="about_images_urls" rows="2" placeholder="https://…/photo.jpg"></textarea></label>
   </div>
 
   <div class="panel">

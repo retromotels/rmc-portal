@@ -3,10 +3,13 @@
 @section('content')
 
 @php $wb = \App\Models\Setting::get('welcome_banner', []); @endphp
-@if(!empty($wb['title']) || !empty($wb['copy']))
-  <div class="welcome-banner">
-    @if(!empty($wb['title']))<h3>{{ $wb['title'] }}</h3>@endif
-    @if(!empty($wb['copy']))<p>{!! nl2br(e($wb['copy'])) !!}</p>@endif
+@if(!empty($wb['title']) || !empty($wb['copy']) || !empty($wb['image']))
+  <div class="welcome-banner {{ !empty($wb['image']) ? 'has-img' : '' }}">
+    <div class="wb-text">
+      @if(!empty($wb['title']))<h3>{{ $wb['title'] }}</h3>@endif
+      @if(!empty($wb['copy']))<p>{!! nl2br(e($wb['copy'])) !!}</p>@endif
+    </div>
+    @if(!empty($wb['image']))<img class="wb-img" src="{{ $wb['image'] }}" alt="" onerror="this.style.display='none'">@endif
   </div>
 @endif
 
