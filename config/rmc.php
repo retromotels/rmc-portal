@@ -15,6 +15,7 @@ return [
     // Where new-signup + health-check alerts go, and the from address for outgoing mail.
     'admin_emails' => ['jeremy@retromotels.com', 'luke@retromotels.com'],
     'mail_from'    => ['address' => env('MAIL_FROM_ADDRESS', 'hello@retromotels.com'), 'name' => env('MAIL_FROM_NAME', 'Retro Motel Collective')],
+    'mail_reply_to' => ['address' => env('MAIL_REPLY_TO', 'jeremy@retromotels.com'), 'name' => env('MAIL_FROM_NAME', 'Retro Motel Collective')],
     'pending_reminder_days' => 7,
 
     /*

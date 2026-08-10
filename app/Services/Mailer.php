@@ -25,9 +25,13 @@ class Mailer
 
         $personalization = ['to' => [['email' => $email->to_email, 'name' => $email->to_name]]];
 
+        $replyTo = config('rmc.mail_reply_to');
         $payload = [
             'from' => ['email' => $from['address'], 'name' => $from['name']],
         ];
+        if (!empty($replyTo['address'])) {
+            $payload['reply_to'] = ['email' => $replyTo['address'], 'name' => $replyTo['name'] ?? ''];
+        }
 
         if ($templateId) {
             $payload['template_id'] = $templateId;
