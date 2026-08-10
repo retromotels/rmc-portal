@@ -5,7 +5,6 @@
   <div class="auth-card">
     <div class="auth-sign">
       @include('partials.logo', ['lg' => true])
-      <div class="neon aqua" style="font-size:20px;margin-top:10px">COLLECTIVE</div>
     </div>
     @if(session('status'))<div class="status">{{ session('status') }}</div>@endif
     <p class="mini" style="margin-bottom:14px">Enter your account email and we’ll send you a link to reset your password.</p>

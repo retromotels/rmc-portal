@@ -15,7 +15,7 @@
 @php $unread = \App\Models\AdminNotification::whereNull('read_at')->count(); @endphp
 <div id="app">
   <aside class="sidebar admin">
-    <div class="sb-logo">@include('partials.logo')<small class="adm-tag">HEAD OFFICE · ADMIN</small></div>
+    <div class="sb-logo">@include('partials.logo', ['stack' => true])<small class="adm-tag">HEAD OFFICE · ADMIN</small></div>
     <nav class="nav">
       <a href="{{ route('admin.overview') }}" class="{{ request()->routeIs('admin.overview') ? 'active' : '' }}"><span class="ic">📊</span>Overview</a>
       <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"><span class="ic">🔔</span>Notifications @if($unread)<span class="cnt">{{ $unread }}</span>@endif</a>

@@ -5,7 +5,6 @@
   <div class="auth-card">
     <div class="auth-sign">
       @include('partials.logo', ['lg' => true])
-      <div class="neon aqua" style="font-size:20px;margin-top:10px">COLLECTIVE</div>
     </div>
     <p class="mini" style="margin-bottom:14px">Choose a new password for your account.</p>
     <form method="POST" action="{{ route('password.update') }}">

@@ -5,7 +5,6 @@
   <div class="auth-card">
     <div class="auth-sign">
       @include('partials.logo', ['lg' => true])
-      <div class="neon aqua" style="font-size:20px;margin-top:10px">COLLECTIVE</div>
       <span class="vac">● ACTIVATE</span>
     </div>
     <p class="mini" style="margin-bottom:14px">Activate the account for <b>{{ $property->motel ?: $property->name }}</b> — accept the policies and set a password.</p>

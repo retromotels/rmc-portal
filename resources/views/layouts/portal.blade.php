@@ -20,7 +20,7 @@
 @endphp
 <div id="app">
   <aside class="sidebar">
-    <div class="sb-logo">@include('partials.logo')<small>COLLECTIVE · MEMBER PORTAL</small></div>
+    <div class="sb-logo">@include('partials.logo', ['stack' => true])<small>COLLECTIVE · MEMBER PORTAL</small></div>
     <nav class="nav">
       <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><span class="ic">◎</span>Dashboard</a>
       <a href="{{ route('registration.index') }}" class="{{ request()->routeIs('registration.index') ? 'active' : '' }}"><span class="ic">📝</span>Property Setup @if($pending)<span class="cnt">{{ $pending }}</span>@endif</a>
