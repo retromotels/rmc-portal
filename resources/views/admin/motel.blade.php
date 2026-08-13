@@ -69,4 +69,19 @@
     </div>
   </div>
 @endforeach
+
+@php $childCount = is_null($member->account_id) ? \App\Models\User::where('account_id', $member->id)->count() : 0; @endphp
+<div class="section-title"><h3 style="color:#b23a48">Danger zone</h3><div class="rule"></div></div>
+<div class="card" style="border:1px solid #f0b8c0;background:#fff7f8">
+  <div class="lbl" style="color:#b23a48">Delete this motel</div>
+  <p class="sub" style="margin:6px 0 12px;line-height:1.6">Permanently removes this profile and account — including its registration details, uploaded files, signed policy documents and chat widget. This cannot be undone.@if($childCount) <b>It will also delete its {{ $childCount }} linked {{ $childCount === 1 ? 'property' : 'properties' }}.</b>@endif</p>
+  <form method="POST" action="{{ route('admin.motel.delete', $member) }}" onsubmit="return confirm('Delete this motel permanently? This cannot be undone.')">
+    @csrf @method('DELETE')
+    <div style="max-width:380px">
+      <span class="sub">Type <b>{{ $member->motel ?: $member->name }}</b> to confirm</span>
+      <input type="text" name="confirm" autocomplete="off" placeholder="{{ $member->motel ?: $member->name }}" style="display:block;width:100%;padding:9px 11px;border:1px solid #e2c2c8;border-radius:8px;margin-top:5px;font-size:14px">
+    </div>
+    <button type="submit" style="margin-top:11px;background:#c0392b;color:#fff;border:none;border-radius:9px;padding:10px 22px;font-weight:700;font-family:Oswald,sans-serif;letter-spacing:.5px;cursor:pointer">Delete permanently</button>
+  </form>
+</div>
 @endsection

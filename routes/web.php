@@ -107,6 +107,7 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/', [AdminController::class, 'overview'])->name('overview');
     Route::get('/motels', [AdminController::class, 'motels'])->name('motels');
     Route::get('/motels/{user}', [AdminController::class, 'motel'])->name('motel');
+    Route::delete('/motels/{user}', [AdminController::class, 'destroy'])->name('motel.delete');
     Route::get('/policies', [AdminController::class, 'policies'])->name('policies');
     Route::get('/policy/{document}/download', [AdminController::class, 'policyDownload'])->name('policy.download');
     Route::get('/upload/{upload}/download', [AdminController::class, 'uploadDownload'])->name('upload.download');
