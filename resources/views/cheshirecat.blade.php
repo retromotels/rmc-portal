@@ -17,7 +17,7 @@
     .cc-bg {
       position: fixed;
       inset: 0;
-      background: url('{{ asset('cheshirecat/bg.jpg') }}') center center / cover no-repeat;
+      background: url('{{ asset('img/cheshirecat-bg.jpg') }}') center center / cover no-repeat;
       z-index: 0;
     }
     /* Content sits above the background — filled in next step */
