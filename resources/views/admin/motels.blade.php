@@ -7,7 +7,7 @@
 </p></div>
 
 <table class="tbl">
-  <thead><tr><th>Motel</th><th>Owner</th><th class="c">Details</th><th>Tier</th><th class="c">Registration</th><th class="c">Signed up</th></tr></thead>
+  <thead><tr><th>Motel</th><th>Owner</th><th class="c">Details</th><th>Tier</th><th class="c">Registration</th><th class="c">Signed up</th><th class="c">View</th></tr></thead>
   <tbody>
     @foreach($members->sortBy('details_complete') as $m)
       <tr class="clickrow" onclick="location.href='{{ route('admin.motel', $m) }}'">
@@ -17,6 +17,7 @@
         <td>{{ $m->tierMeta()['name'] }}</td>
         <td class="c">{{ $m->overallPct() }}%</td>
         <td class="c">{{ $m->created_at?->format('j M Y') }}</td>
+        <td class="c"><a href="{{ route('admin.preview', $m->id) }}" onclick="event.stopPropagation()" title="View this property's portal">👁 View as</a></td>
       </tr>
     @endforeach
   </tbody>

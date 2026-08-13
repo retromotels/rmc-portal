@@ -17,19 +17,25 @@ class ResolveProperty
     {
         $u = $request->user();
 
-        // Admin "view as property" preview across tiers.
-        if ($u && $u->isAdmin() && in_array(session('admin_preview_tier'), ['standard', 'growth', 'full'], true)) {
-            $tier = session('admin_preview_tier');
-            $band = ['standard' => 'small', 'growth' => 'mid', 'full' => 'large'][$tier];
-            $preview = new User([
-                'name' => $u->name, 'role' => 'owner', 'motel' => 'Preview Property',
-                'band' => $band, 'tier' => $tier, 'details_complete' => true,
-            ]);
-            $preview->id = 0;
-            $request->attributes->set('currentProperty', $preview);
-            View::share('currentProperty', $preview);
-            View::share('adminPreview', $tier);
-            return $next($request);
+        // Admin "view as" a specific property — sees that property's real portal.
+        if ($u && $u->isAdmin() && ($pid = (int) session('admin_preview_user_id'))) {
+            $preview = User::where('role', 'owner')->find($pid);
+            if ($preview) {
+                $props    = $preview->accountProperties();
+                $selected = (int) session('current_property_id');
+                $current  = $props->firstWhere('id', $selected)
+                    ?? $props->firstWhere('id', $preview->id)
+                    ?? $props->first()
+                    ?? $preview;
+
+                $request->attributes->set('currentProperty', $current);
+                $request->attributes->set('accountProperties', $props);
+                View::share('currentProperty', $current);
+                View::share('accountProperties', $props);
+                View::share('adminPreview', $preview);   // the real account being viewed
+                return $next($request);
+            }
+            session()->forget('admin_preview_user_id');  // stale id — clear it
         }
 
         if ($u && !$u->isAdmin()) {

@@ -43,12 +43,7 @@
   <main class="main">
     @isset($adminPreview)
       <div class="preview-bar">
-        <span>👁 Previewing the portal as <b>{{ ucfirst($adminPreview) }}</b> tier</span>
-        <span class="pv-tiers">
-          @foreach(['standard' => 'Standard', 'growth' => 'Growth', 'full' => 'Full'] as $t => $lbl)
-            <a href="{{ route('admin.preview', $t) }}" class="{{ $adminPreview === $t ? 'on' : '' }}">{{ $lbl }}</a>
-          @endforeach
-        </span>
+        <span>👁 Viewing as <b>{{ $adminPreview->motel ?: $adminPreview->name }}</b>@if($adminPreview->loc) · {{ $adminPreview->loc }}@endif<span class="pv-tier"> · {{ $adminPreview->tierMeta()['name'] ?? ucfirst($adminPreview->tier) }}</span></span>
         <form method="POST" action="{{ route('preview.exit') }}">@csrf<button type="submit">Exit preview →</button></form>
       </div>
     @endisset

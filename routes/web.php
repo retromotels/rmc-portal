@@ -12,6 +12,7 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ChatWidgetController;
 use App\Http\Controllers\PublicWidgetController;
+use App\Models\User;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Middleware\LogActivity;
 use App\Http\Middleware\ResolveProperty;
@@ -64,7 +65,8 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
 
     // Exit the admin "view as" preview
     Route::post('/preview/exit', function () {
-        session()->forget('admin_preview_tier');
+        session()->forget('admin_preview_user_id');
+        session()->forget('current_property_id');
         return redirect()->route('admin.overview');
     })->name('preview.exit');
 
@@ -146,9 +148,12 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/motels/{user}/images/{file}/download', [ImageController::class, 'download'])->name('images.download');
     Route::get('/motels/{user}/images-zip', [ImageController::class, 'zip'])->name('images.zip');
 
-    // Admin "view as property" preview
-    Route::get('/preview/{tier}', function (string $tier) {
-        if (in_array($tier, ['standard', 'growth', 'full'], true)) session(['admin_preview_tier' => $tier]);
+    // Admin "view as" a specific property — see that property's real portal
+    Route::get('/preview/{user}', function (User $user) {
+        if ($user->role === 'owner') {
+            session(['admin_preview_user_id' => $user->id]);
+            session()->forget('current_property_id');
+        }
         return redirect()->route('dashboard');
     })->name('preview');
 });

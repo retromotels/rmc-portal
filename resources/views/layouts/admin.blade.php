@@ -35,11 +35,15 @@
   <main class="main">
     <div class="topbar">
       <h2>@yield('title')</h2>
+      @php $vaProps = \App\Models\User::where('role', 'owner')->orderBy('motel')->get(['id', 'motel', 'name', 'loc']); @endphp
       <div class="view-as">
-        <span class="va-lbl">View portal as:</span>
-        <a href="{{ route('admin.preview', 'standard') }}">Standard</a>
-        <a href="{{ route('admin.preview', 'growth') }}">Growth</a>
-        <a href="{{ route('admin.preview', 'full') }}">Full</a>
+        <span class="va-lbl">View as property:</span>
+        <select onchange="if(this.value)location.href=this.value" style="padding:7px 10px;border:1px solid #e2d6c2;border-radius:8px;font-size:13px;font-family:inherit;max-width:260px">
+          <option value="">Select a property…</option>
+          @foreach($vaProps as $p)
+            <option value="{{ route('admin.preview', $p->id) }}">{{ $p->motel ?: $p->name }}{{ $p->loc ? ' — '.$p->loc : '' }}</option>
+          @endforeach
+        </select>
       </div>
     </div>
     <div class="content">
