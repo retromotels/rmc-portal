@@ -10,6 +10,8 @@ use App\Http\Controllers\HealthController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\ChatWidgetController;
+use App\Http\Controllers\PublicWidgetController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Middleware\LogActivity;
 use App\Http\Middleware\ResolveProperty;
@@ -33,6 +35,10 @@ Route::get('/', fn () => redirect()->route('register'));
 
 // Cheshire Cat microsite (public)
 Route::get('/cheshirecat', fn () => view('cheshirecat'))->name('cheshirecat');
+
+// Public embeddable guest chat widget loader (served to properties' own websites)
+Route::get('/widget/{token}.js', [PublicWidgetController::class, 'js'])
+    ->where('token', '[A-Za-z0-9]+')->name('widget.js');
 
 // Guest auth
 Route::middleware('guest')->group(function () {
@@ -83,6 +89,10 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
 
     Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+
+    // Tools → Chat Widget
+    Route::get('/tools/chat-widget', [ChatWidgetController::class, 'edit'])->name('tools.chat-widget');
+    Route::put('/tools/chat-widget', [ChatWidgetController::class, 'update']);
 
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::post('/account', [AccountController::class, 'update'])->name('account.update');
