@@ -14,6 +14,9 @@ use App\Http\Controllers\ChatWidgetController;
 use App\Http\Controllers\PublicWidgetController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\Admin\JobAdminController;
+use App\Http\Controllers\Jobs\PublicJobController;
+use App\Http\Controllers\Jobs\SeekerAuthController;
+use App\Http\Controllers\Jobs\ApplicationController;
 use App\Models\User;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Middleware\LogActivity;
@@ -33,6 +36,25 @@ use Illuminate\Support\Facades\Route;
 | Retro Motel Collective — web routes
 |--------------------------------------------------------------------------
 */
+
+/*
+| Public job board on jobs.retromotels.com (domain-routed, registered first so
+| the jobs host resolves here rather than to the portal routes below).
+*/
+Route::domain(config('rmc.jobs_host'))->group(function () {
+    Route::get('/', [PublicJobController::class, 'index'])->name('jobs.board');
+    Route::get('/jobs/{slug}', [PublicJobController::class, 'show'])->name('jobs.public.show');
+
+    Route::get('/register', [SeekerAuthController::class, 'showRegister'])->name('seeker.register');
+    Route::post('/register', [SeekerAuthController::class, 'register']);
+    Route::get('/login', [SeekerAuthController::class, 'showLogin'])->name('seeker.login');
+    Route::post('/login', [SeekerAuthController::class, 'login']);
+    Route::post('/logout', [SeekerAuthController::class, 'logout'])->name('seeker.logout');
+
+    Route::get('/jobs/{slug}/apply', [ApplicationController::class, 'create'])->name('jobs.apply');
+    Route::post('/jobs/{slug}/apply', [ApplicationController::class, 'store']);
+    Route::get('/account', [ApplicationController::class, 'dashboard'])->name('seeker.dashboard');
+});
 
 Route::get('/', fn () => redirect()->route('register'));
 
