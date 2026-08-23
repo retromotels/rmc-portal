@@ -29,6 +29,7 @@
       <a href="{{ route('faq') }}" class="{{ request()->routeIs('faq') ? 'active' : '' }}"><span class="ic">❓</span>FAQ</a>
       <div style="font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#b7ab97;margin:16px 0 4px;padding:0 4px">Tools</div>
       <a href="{{ route('tools.chat-widget') }}" class="{{ request()->routeIs('tools.chat-widget') ? 'active' : '' }}"><span class="ic">💬</span>Chat Widget</a>
+      <a href="{{ route('jobs.index') }}" class="{{ request()->routeIs('jobs.*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs</a>
       @foreach(['✨|AI Assist','📤|My Documents','📇|Supplier Directory','🎙️|Monthly Roundtable','👥|Community','📚|Resource Library'] as $s)
         @php [$ic,$lbl] = explode('|', $s); @endphp
         <a class="soon" title="Launching 1 September"><span class="ic">{{ $ic }}</span>{{ $lbl }}<span class="soon-tag">SOON</span></a>

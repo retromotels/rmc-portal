@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="{{ asset('css/portal.css') }}">
 </head>
 <body>
-@php $unread = \App\Models\AdminNotification::whereNull('read_at')->count(); @endphp
+@php $unread = \App\Models\AdminNotification::whereNull('read_at')->count(); $jobsPending = \App\Models\JobListing::where('status', 'pending')->count(); @endphp
 <div id="app">
   <aside class="sidebar admin">
     <div class="sb-logo">@include('partials.logo', ['stack' => true])<small class="adm-tag">HEAD OFFICE · ADMIN</small></div>
@@ -20,6 +20,7 @@
       <a href="{{ route('admin.overview') }}" class="{{ request()->routeIs('admin.overview') ? 'active' : '' }}"><span class="ic">📊</span>Overview</a>
       <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"><span class="ic">🔔</span>Notifications @if($unread)<span class="cnt">{{ $unread }}</span>@endif</a>
       <a href="{{ route('admin.motels') }}" class="{{ request()->routeIs('admin.motel*') ? 'active' : '' }}"><span class="ic">🏨</span>Motels</a>
+      <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs @if($jobsPending)<span class="cnt">{{ $jobsPending }}</span>@endif</a>
       <a href="{{ route('admin.onboard.create') }}" class="{{ request()->routeIs('admin.onboard.*') ? 'active' : '' }}"><span class="ic">➕</span>Create Property</a>
       <a href="{{ route('admin.activity') }}" class="{{ request()->routeIs('admin.activity') ? 'active' : '' }}"><span class="ic">📈</span>Activity</a>
       <a href="{{ route('admin.listings.index') }}" class="{{ request()->routeIs('admin.listings.*') ? 'active' : '' }}"><span class="ic">✅</span>Listing Check</a>

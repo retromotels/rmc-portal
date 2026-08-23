@@ -12,6 +12,8 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ChatWidgetController;
 use App\Http\Controllers\PublicWidgetController;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\Admin\JobAdminController;
 use App\Models\User;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Middleware\LogActivity;
@@ -96,6 +98,17 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
     Route::get('/tools/chat-widget', [ChatWidgetController::class, 'edit'])->name('tools.chat-widget');
     Route::put('/tools/chat-widget', [ChatWidgetController::class, 'update']);
 
+    // Jobs (property listings for the public board)
+    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+    Route::get('/jobs/new', [JobController::class, 'create'])->name('jobs.create');
+    Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
+    Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
+    Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+    Route::get('/jobs/{job}/applicants', [JobController::class, 'applicants'])->name('jobs.applicants');
+    Route::post('/jobs/{job}/close', [JobController::class, 'close'])->name('jobs.close');
+    Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
+    Route::get('/applications/{application}/cv', [JobController::class, 'cvDownload'])->name('jobs.cv');
+
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::post('/account', [AccountController::class, 'update'])->name('account.update');
     Route::get('/account/policy/{document}', [AccountController::class, 'policyDownload'])->name('account.policy');
@@ -108,6 +121,12 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/motels', [AdminController::class, 'motels'])->name('motels');
     Route::get('/motels/{user}', [AdminController::class, 'motel'])->name('motel');
     Route::delete('/motels/{user}', [AdminController::class, 'destroy'])->name('motel.delete');
+
+    // Jobs approval queue
+    Route::get('/jobs', [JobAdminController::class, 'index'])->name('jobs');
+    Route::post('/jobs/{job}/approve', [JobAdminController::class, 'approve'])->name('jobs.approve');
+    Route::post('/jobs/{job}/reject', [JobAdminController::class, 'reject'])->name('jobs.reject');
+    Route::get('/jobs/{job}/applicants', [JobAdminController::class, 'applicants'])->name('jobs.applicants');
     Route::get('/policies', [AdminController::class, 'policies'])->name('policies');
     Route::get('/policy/{document}/download', [AdminController::class, 'policyDownload'])->name('policy.download');
     Route::get('/upload/{upload}/download', [AdminController::class, 'uploadDownload'])->name('upload.download');

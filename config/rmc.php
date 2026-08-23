@@ -242,4 +242,27 @@ return [
             ],
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Job board (jobs.retromotels.com)
+    |--------------------------------------------------------------------------
+    */
+    'jobs_host' => env('RMC_JOBS_HOST', 'jobs.retromotels.com'),
+
+    'employment_types' => [
+        'full-time' => 'Full-time',
+        'part-time' => 'Part-time',
+        'casual'    => 'Casual',
+        'contract'  => 'Contract',
+    ],
+
+    'job_departments' => [
+        'front-office'   => 'Front office & reception',
+        'housekeeping'   => 'Housekeeping',
+        'food-beverage'  => 'Food & beverage',
+        'maintenance'    => 'Maintenance & grounds',
+        'management'     => 'Management',
+        'other'          => 'Other',
+    ],
 ];
