@@ -265,4 +265,28 @@ return [
         'management'     => 'Management',
         'other'          => 'Other',
     ],
+
+    // Australian states / territories for the location filter (code => label).
+    'job_states' => [
+        'NSW' => 'New South Wales',
+        'VIC' => 'Victoria',
+        'QLD' => 'Queensland',
+        'SA'  => 'South Australia',
+        'WA'  => 'Western Australia',
+        'TAS' => 'Tasmania',
+        'NT'  => 'Northern Territory',
+        'ACT' => 'ACT',
+    ],
+
+    /*
+    | Pay filter bands, on the normalised annual-equivalent salary (salary_annual).
+    | A job matches a band when its salary_annual is at or above the band's `min`.
+    | Roles with no listed salary are excluded when a band is selected.
+    */
+    'salary_bands' => [
+        '50000'  => '$50k+',
+        '70000'  => '$70k+',
+        '90000'  => '$90k+',
+        '110000' => '$110k+',
+    ],
 ];

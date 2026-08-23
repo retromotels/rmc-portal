@@ -50,12 +50,24 @@
           <option value="{{ $k }}" @selected($dept === $k)>{{ $lbl }}</option>
         @endforeach
       </select>
+      <select name="state" onchange="this.form.submit()">
+        <option value="">All states</option>
+        @foreach(config('rmc.job_states') as $code => $lbl)
+          <option value="{{ $code }}" @selected($state === $code)>{{ $code }} — {{ $lbl }}</option>
+        @endforeach
+      </select>
+      <select name="pay" onchange="this.form.submit()">
+        <option value="">Any pay</option>
+        @foreach(config('rmc.salary_bands') as $min => $lbl)
+          <option value="{{ $min }}" @selected($pay === (string) $min)>{{ $lbl }}</option>
+        @endforeach
+      </select>
       <button class="btn btn-rust" type="submit">Search</button>
     </form>
     <div class="chips">
-      <a href="{{ route('jobs.board', array_filter(['dept' => $dept, 'q' => $kw])) }}" class="chip {{ !$type ? 'on' : '' }}">All types</a>
+      <a href="{{ route('jobs.board', array_filter(['dept' => $dept, 'state' => $state, 'pay' => $pay, 'q' => $kw])) }}" class="chip {{ !$type ? 'on' : '' }}">All types</a>
       @foreach(config('rmc.employment_types') as $k => $lbl)
-        <a href="{{ route('jobs.board', array_filter(['type' => $k, 'dept' => $dept, 'q' => $kw])) }}" class="chip {{ $type === $k ? 'on' : '' }}">{{ $lbl }}</a>
+        <a href="{{ route('jobs.board', array_filter(['type' => $k, 'dept' => $dept, 'state' => $state, 'pay' => $pay, 'q' => $kw])) }}" class="chip {{ $type === $k ? 'on' : '' }}">{{ $lbl }}</a>
       @endforeach
     </div>
   </div>
@@ -79,7 +91,7 @@
       <span class="btn btn-ink jc-cta">View &amp; apply →</span>
     </a>
   @empty
-    <div class="empty">@if($kw || $type || $dept)No roles match that search — <a href="{{ route('jobs.board') }}" style="color:var(--rust)">clear filters</a> and check back soon.@else No open roles right now — check back soon.@endif</div>
+    <div class="empty">@if($kw || $type || $dept || $state || $pay)No roles match those filters — <a href="{{ route('jobs.board') }}" style="color:var(--rust)">clear filters</a> and check back soon.@else No open roles right now — check back soon.@endif</div>
   @endforelse
 
   @if($jobs->hasPages())

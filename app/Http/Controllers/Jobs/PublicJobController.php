@@ -10,9 +10,11 @@ class PublicJobController extends Controller
 {
     public function index(Request $r)
     {
-        $type = $r->query('type');
-        $dept = $r->query('dept');
-        $kw   = trim((string) $r->query('q'));
+        $type  = $r->query('type');
+        $dept  = $r->query('dept');
+        $state = strtoupper((string) $r->query('state'));
+        $pay   = (string) $r->query('pay');
+        $kw    = trim((string) $r->query('q'));
 
         $q = JobListing::live()->with('property')->latest('approved_at');
 
@@ -21,6 +23,12 @@ class PublicJobController extends Controller
         }
         if (array_key_exists((string) $dept, config('rmc.job_departments'))) {
             $q->where('department', $dept);
+        }
+        if (array_key_exists($state, config('rmc.job_states'))) {
+            $q->where('state', $state);
+        }
+        if (array_key_exists($pay, config('rmc.salary_bands'))) {
+            $q->where('salary_annual', '>=', (int) $pay);
         }
         if ($kw !== '') {
             $q->where(fn ($w) => $w->where('title', 'like', "%{$kw}%")
@@ -32,6 +40,8 @@ class PublicJobController extends Controller
             'jobs'  => $q->paginate(24)->withQueryString(),
             'type'  => $type,
             'dept'  => $dept,
+            'state' => array_key_exists($state, config('rmc.job_states')) ? $state : '',
+            'pay'   => array_key_exists($pay, config('rmc.salary_bands')) ? $pay : '',
             'kw'    => $kw,
         ]);
     }

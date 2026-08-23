@@ -39,13 +39,22 @@ class ImportJobs extends Command
 
         $source = (string) $this->option('source');
         $created = 0;
-        $skipped = 0;
+        $updated = 0;
 
         foreach ($rows as $r) {
             $ref = $r['source_ref'] ?? null;
-            if ($ref && JobListing::where('source', $source)->where('source_ref', $ref)->exists()) {
-                $skipped++;
-                continue;
+            $state = isset($r['state']) ? strtoupper(trim((string) $r['state'])) : null;
+            $salary = isset($r['salary_annual']) && $r['salary_annual'] !== null ? (int) $r['salary_annual'] : null;
+
+            // Already imported: backfill the state + salary columns without disturbing
+            // its status (an admin may have edited or closed it since). Idempotent.
+            if ($ref) {
+                $existing = JobListing::where('source', $source)->where('source_ref', $ref)->first();
+                if ($existing) {
+                    $existing->update(['state' => $state ?: null, 'salary_annual' => $salary]);
+                    $updated++;
+                    continue;
+                }
             }
 
             $type = $r['employment_type'] ?? 'full-time';
@@ -58,7 +67,9 @@ class ImportJobs extends Command
                 'employment_type' => in_array($type, ['full-time', 'part-time', 'casual', 'contract'], true) ? $type : 'full-time',
                 'department'      => $r['department'] ?? null,
                 'location'        => $r['location'] ?? null,
+                'state'           => $state ?: null,
                 'pay'             => $r['pay'] ?? null,
+                'salary_annual'   => $salary,
                 'description'     => $r['description'] ?? '',
                 'status'          => 'approved',
                 'approved_at'     => now(),
@@ -66,7 +77,7 @@ class ImportJobs extends Command
             $created++;
         }
 
-        $this->info("Imported {$created} jobs, skipped {$skipped} already present. Owner: {$admin->email}, source: {$source}.");
+        $this->info("Imported {$created} new jobs, backfilled {$updated} existing. Owner: {$admin->email}, source: {$source}.");
         return self::SUCCESS;
     }
 }

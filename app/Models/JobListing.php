@@ -9,13 +9,13 @@ class JobListing extends Model
 {
     protected $fillable = [
         'user_id', 'employer', 'source', 'source_ref', 'title', 'slug',
-        'employment_type', 'department', 'location', 'pay', 'description',
-        'status', 'reject_reason', 'approved_at', 'closes_at',
+        'employment_type', 'department', 'location', 'state', 'pay', 'salary_annual',
+        'description', 'status', 'reject_reason', 'approved_at', 'closes_at',
     ];
 
     protected function casts(): array
     {
-        return ['approved_at' => 'datetime', 'closes_at' => 'date'];
+        return ['approved_at' => 'datetime', 'closes_at' => 'date', 'salary_annual' => 'integer'];
     }
 
     protected static function booted(): void
