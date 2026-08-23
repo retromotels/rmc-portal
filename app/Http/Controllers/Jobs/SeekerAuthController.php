@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JobSeeker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class SeekerAuthController extends Controller
@@ -24,6 +25,7 @@ class SeekerAuthController extends Controller
             'name'     => ['required', 'string', 'max:120'],
             'email'    => ['required', 'email', 'max:190', 'unique:job_seekers,email'],
             'phone'    => ['nullable', 'string', 'max:40'],
+            'state'    => ['nullable', Rule::in(array_keys(config('rmc.job_states')))],
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 

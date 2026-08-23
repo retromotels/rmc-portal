@@ -21,6 +21,7 @@
       <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"><span class="ic">🔔</span>Notifications @if($unread)<span class="cnt">{{ $unread }}</span>@endif</a>
       <a href="{{ route('admin.motels') }}" class="{{ request()->routeIs('admin.motel*') ? 'active' : '' }}"><span class="ic">🏨</span>Motels</a>
       <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs @if($jobsPending)<span class="cnt">{{ $jobsPending }}</span>@endif</a>
+      <a href="{{ route('admin.seekers') }}" class="{{ request()->routeIs('admin.seeker*') ? 'active' : '' }}"><span class="ic">🧑‍💼</span>Applicants</a>
       <a href="{{ route('admin.onboard.create') }}" class="{{ request()->routeIs('admin.onboard.*') ? 'active' : '' }}"><span class="ic">➕</span>Create Property</a>
       <a href="{{ route('admin.activity') }}" class="{{ request()->routeIs('admin.activity') ? 'active' : '' }}"><span class="ic">📈</span>Activity</a>
       <a href="{{ route('admin.listings.index') }}" class="{{ request()->routeIs('admin.listings.*') ? 'active' : '' }}"><span class="ic">✅</span>Listing Check</a>

@@ -14,6 +14,7 @@ use App\Http\Controllers\ChatWidgetController;
 use App\Http\Controllers\PublicWidgetController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\Admin\JobAdminController;
+use App\Http\Controllers\Admin\SeekerAdminController;
 use App\Http\Controllers\Jobs\PublicJobController;
 use App\Http\Controllers\Jobs\SeekerAuthController;
 use App\Http\Controllers\Jobs\ApplicationController;
@@ -149,6 +150,11 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::post('/jobs/{job}/approve', [JobAdminController::class, 'approve'])->name('jobs.approve');
     Route::post('/jobs/{job}/reject', [JobAdminController::class, 'reject'])->name('jobs.reject');
     Route::get('/jobs/{job}/applicants', [JobAdminController::class, 'applicants'])->name('jobs.applicants');
+
+    // Job-seeker CRM (registered applicants)
+    Route::get('/seekers', [SeekerAdminController::class, 'index'])->name('seekers');
+    Route::get('/seekers/{seeker}/cv', [SeekerAdminController::class, 'cvDownload'])->name('seeker.cv');
+
     Route::get('/policies', [AdminController::class, 'policies'])->name('policies');
     Route::get('/policy/{document}/download', [AdminController::class, 'policyDownload'])->name('policy.download');
     Route::get('/upload/{upload}/download', [AdminController::class, 'uploadDownload'])->name('upload.download');

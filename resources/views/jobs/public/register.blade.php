@@ -26,6 +26,14 @@
       <label class="fld"><span>Full name</span><input type="text" name="name" value="{{ old('name') }}" required></label>
       <label class="fld"><span>Email</span><input type="email" name="email" value="{{ old('email') }}" required></label>
       <label class="fld"><span>Phone (optional)</span><input type="text" name="phone" value="{{ old('phone') }}"></label>
+      <label class="fld"><span>State (optional)</span>
+        <select name="state" style="width:100%;padding:12px 14px;border:1.5px solid var(--bone);border-radius:9px;font:inherit;font-size:15px;background:var(--paper)">
+          <option value="">Prefer not to say</option>
+          @foreach(config('rmc.job_states') as $code => $lbl)
+            <option value="{{ $code }}" @selected(old('state') === $code)>{{ $lbl }}</option>
+          @endforeach
+        </select>
+      </label>
       <label class="fld"><span>Password</span><input type="password" name="password" required></label>
       <label class="fld"><span>Confirm password</span><input type="password" name="password_confirmation" required></label>
       <button class="btn btn-rust btn-full" type="submit">Create account</button>
