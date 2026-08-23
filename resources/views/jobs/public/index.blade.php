@@ -23,6 +23,11 @@
   .jc-snip{font-size:14px;color:var(--ink-soft);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .jc-cta{align-self:center;white-space:nowrap}
   .empty{background:#fff;border:1px solid var(--bone);border-radius:16px;padding:44px;text-align:center;color:var(--ink-soft)}
+  .pager{display:flex;align-items:center;justify-content:center;gap:16px;margin:26px 0 6px}
+  .pg{background:#fff;border:1.5px solid var(--bone);border-radius:9px;padding:9px 16px;font-weight:700;font-size:13.5px;text-decoration:none;color:var(--ink)}
+  .pg:hover{border-color:var(--rust);color:var(--rust)}
+  .pg.off{opacity:.4;pointer-events:none}
+  .pg-info{font-size:13px;color:var(--ink-soft)}
 </style>
 @endsection
 @section('content')
@@ -57,13 +62,13 @@
 </section>
 
 <main class="wrap">
-  <div class="result-meta">{{ $jobs->count() }} of {{ $total }} open {{ $total === 1 ? 'role' : 'roles' }}@if($kw) matching “{{ $kw }}”@endif</div>
+  <div class="result-meta">{{ number_format($jobs->total()) }} open {{ $jobs->total() === 1 ? 'role' : 'roles' }}@if($kw) matching “{{ $kw }}”@endif</div>
 
   @forelse($jobs as $job)
     <a class="jcard" href="{{ route('jobs.public.show', $job->slug) }}">
       <div class="jc-main">
         <h2 class="jc-title">{{ $job->title }}</h2>
-        <div class="jc-prop">{{ $job->property->motel ?: 'Retro Motel' }}@if($job->location) · {{ $job->location }}@endif</div>
+        <div class="jc-prop">{{ $job->employerName() }}@if($job->location) · {{ $job->location }}@endif</div>
         <div class="jc-badges">
           <span class="badge">{{ $job->typeLabel() }}</span>
           @if($job->departmentLabel())<span class="badge alt">{{ $job->departmentLabel() }}</span>@endif
@@ -76,5 +81,13 @@
   @empty
     <div class="empty">@if($kw || $type || $dept)No roles match that search — <a href="{{ route('jobs.board') }}" style="color:var(--rust)">clear filters</a> and check back soon.@else No open roles right now — check back soon.@endif</div>
   @endforelse
+
+  @if($jobs->hasPages())
+    <div class="pager">
+      @if($jobs->onFirstPage())<span class="pg off">← Prev</span>@else<a class="pg" href="{{ $jobs->previousPageUrl() }}">← Prev</a>@endif
+      <span class="pg-info">Page {{ $jobs->currentPage() }} of {{ $jobs->lastPage() }}</span>
+      @if($jobs->hasMorePages())<a class="pg" href="{{ $jobs->nextPageUrl() }}">Next →</a>@else<span class="pg off">Next →</span>@endif
+    </div>
+  @endif
 </main>
 @endsection

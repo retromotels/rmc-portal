@@ -35,7 +35,7 @@
     <div class="ja-top">
       <div>
         <h3 class="ja-title">{{ $job->title }}</h3>
-        <div class="ja-prop">{{ $job->property->motel ?: $job->property->name }}@if($job->location) · {{ $job->location }}@endif</div>
+        <div class="ja-prop">{{ $job->employerName() }}@if($job->location) · {{ $job->location }}@endif</div>
       </div>
       <span class="ja-flag f-{{ $job->status }}">{{ $job->status }}</span>
     </div>
@@ -64,4 +64,12 @@
 @empty
   <div class="ja-empty">No {{ $status }} jobs.</div>
 @endforelse
+
+@if($jobs->hasPages())
+  <div style="display:flex;gap:14px;align-items:center;justify-content:center;margin-top:18px">
+    @if(!$jobs->onFirstPage())<a href="{{ $jobs->previousPageUrl() }}" style="text-decoration:none;color:#2f6f76;font-weight:700">← Prev</a>@endif
+    <span style="font-size:13px;color:#8a7d68">Page {{ $jobs->currentPage() }} of {{ $jobs->lastPage() }}</span>
+    @if($jobs->hasMorePages())<a href="{{ $jobs->nextPageUrl() }}" style="text-decoration:none;color:#2f6f76;font-weight:700">Next →</a>@endif
+  </div>
+@endif
 @endsection

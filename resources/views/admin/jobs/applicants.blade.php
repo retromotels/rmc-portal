@@ -15,7 +15,7 @@
 
 <a class="ap-back" href="{{ route('admin.jobs') }}">← Jobs</a>
 <h2 class="ap-h">{{ $job->title }}</h2>
-<div class="ap-sub">{{ $job->property->motel ?: $job->property->name }}@if($job->location) · {{ $job->location }}@endif · {{ $job->applications->count() }} applicant{{ $job->applications->count() === 1 ? '' : 's' }}</div>
+<div class="ap-sub">{{ $job->employerName() }}@if($job->location) · {{ $job->location }}@endif · {{ $job->applications->count() }} applicant{{ $job->applications->count() === 1 ? '' : 's' }}</div>
 
 @forelse($job->applications->sortByDesc('created_at') as $app)
   <div class="ap-card">

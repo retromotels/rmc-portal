@@ -21,7 +21,7 @@
 <div class="apply">
   <a class="back" href="{{ route('jobs.public.show', $job->slug) }}">← Back to role</a>
   <h1>Apply</h1>
-  <div class="for">{{ $job->title }} · {{ $job->property->motel ?: 'Retro Motel' }}</div>
+  <div class="for">{{ $job->title }} · {{ $job->employerName() }}</div>
 
   @if($applied)
     <div class="done">✓ You've already applied for this role. The property has your details — you can see it under <a href="{{ route('seeker.dashboard') }}" style="color:#2e7d4f;font-weight:700">My applications</a>.</div>

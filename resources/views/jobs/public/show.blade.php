@@ -23,7 +23,7 @@
     <div class="flash">✓ Your application for <b>{{ session('applied') }}</b> has been sent. The property will be in touch. You can track it under <a href="{{ route('seeker.dashboard') }}" style="color:#2e7d4f;font-weight:700">My applications</a>.</div>
   @endif
 
-  <div class="d-prop">{{ $job->property->motel ?: 'Retro Motel' }}@if($job->location) · {{ $job->location }}@endif</div>
+  <div class="d-prop">{{ $job->employerName() }}@if($job->location) · {{ $job->location }}@endif</div>
   <h1 class="d-title">{{ $job->title }}</h1>
   <div class="d-badges">
     <span class="badge">{{ $job->typeLabel() }}</span>

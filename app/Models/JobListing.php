@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 class JobListing extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'slug', 'employment_type', 'department',
-        'location', 'pay', 'description', 'status', 'reject_reason',
-        'approved_at', 'closes_at',
+        'user_id', 'employer', 'source', 'source_ref', 'title', 'slug',
+        'employment_type', 'department', 'location', 'pay', 'description',
+        'status', 'reject_reason', 'approved_at', 'closes_at',
     ];
 
     protected function casts(): array
@@ -62,6 +62,12 @@ class JobListing extends Model
     }
 
     /* ---- Display helpers ---- */
+    /** The employer to show: the member property's motel, or the stored employer name. */
+    public function employerName(): string
+    {
+        return $this->property?->motel ?: ($this->employer ?: 'Retro Motels');
+    }
+
     public function typeLabel(): string
     {
         return ['full-time' => 'Full-time', 'part-time' => 'Part-time', 'casual' => 'Casual', 'contract' => 'Contract'][$this->employment_type] ?? ucfirst($this->employment_type);

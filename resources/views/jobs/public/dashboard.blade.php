@@ -23,7 +23,7 @@
     <a class="arow" href="{{ $app->job ? route('jobs.public.show', $app->job->slug) : route('jobs.board') }}">
       <div>
         <div class="a-title">{{ $app->job->title ?? 'Role removed' }}</div>
-        <div class="a-prop">{{ $app->job->property->motel ?? '' }}@if($app->job && $app->job->location) · {{ $app->job->location }}@endif</div>
+        <div class="a-prop">{{ $app->job?->employerName() }}@if($app->job && $app->job->location) · {{ $app->job->location }}@endif</div>
         <div class="a-when">Applied {{ $app->created_at?->format('j M Y') }}</div>
       </div>
       <span class="a-stat">{{ $app->status }}</span>

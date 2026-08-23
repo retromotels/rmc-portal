@@ -17,7 +17,7 @@ class JobAdminController extends Controller
         }
 
         return view('admin.jobs.index', [
-            'jobs'   => $q->get(),
+            'jobs'   => $q->paginate(30)->withQueryString(),
             'status' => $status,
             'counts' => JobListing::selectRaw('status, count(*) as c')->groupBy('status')->pluck('c', 'status'),
         ]);

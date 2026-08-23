@@ -29,8 +29,7 @@ class PublicJobController extends Controller
         }
 
         return view('jobs.public.index', [
-            'jobs'  => $q->get(),
-            'total' => JobListing::live()->count(),
+            'jobs'  => $q->paginate(24)->withQueryString(),
             'type'  => $type,
             'dept'  => $dept,
             'kw'    => $kw,
