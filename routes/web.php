@@ -58,6 +58,10 @@ Route::domain(config('rmc.jobs_host'))->group(function () {
 
 Route::get('/', fn () => redirect()->route('register'));
 
+// TEMP: job board preview for staging visual check (remove after verify)
+Route::get('/__jobs-preview', [PublicJobController::class, 'index']);
+Route::get('/__jobs-preview/{slug}', [PublicJobController::class, 'show']);
+
 // Cheshire Cat microsite (public)
 Route::get('/cheshirecat', fn () => view('cheshirecat'))->name('cheshirecat');
 
