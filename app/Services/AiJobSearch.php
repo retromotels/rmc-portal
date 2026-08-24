@@ -174,14 +174,15 @@ class AiJobSearch
         $stop = ['in', 'the', 'a', 'an', 'for', 'over', 'above', 'under', 'below', 'at', 'least', 'min', 'minimum',
             'per', 'year', 'annum', 'hour', 'hr', 'pa', 'jobs', 'job', 'role', 'roles', 'work', 'position', 'positions',
             'and', 'or', 'with', 'looking', 'want', 'need', 'around', 'near', 'k', 'full', 'part', 'time', 'casual', 'contract',
-            'south', 'western', 'new', 'wales', 'australia', 'territory', 'northern', 'capital', 'australian'];
+            'south', 'western', 'new', 'wales', 'australia', 'territory', 'northern', 'capital', 'australian',
+            'nsw', 'vic', 'qld', 'sa', 'wa', 'tas', 'nt', 'act', 'canberra', 'queensland', 'victoria', 'tasmania'];
         $words = preg_split('/[^a-z0-9&]+/i', strtolower($phrase), -1, PREG_SPLIT_NO_EMPTY);
         $keep = [];
         foreach ($words as $w) {
             if (is_numeric($w) || str_contains($w, 'k') && preg_match('/^\d+k$/', $w)) {
                 continue;
             }
-            if (in_array($w, $stop, true)) {
+            if (mb_strlen($w) < 3 || in_array($w, $stop, true)) {
                 continue;
             }
             $keep[] = $w;
