@@ -38,8 +38,15 @@
   @csrf
   <div class="vd-card">
     <h2>Who are you checking?</h2>
+    <div class="vd-row" style="align-items:flex-end">
+      <label class="fld" style="flex:2"><span>Creator's Instagram handle</span><input type="text" id="handle" name="handle" value="{{ old('handle') }}" placeholder="@their_handle" required></label>
+      <div class="fld" style="flex:0 0 auto;min-width:auto">
+        <span style="visibility:hidden">Look up</span>
+        <button type="button" id="lookupBtn" onclick="lookupHandle()" style="background:#1F2933;color:#F8EED6;border:none;border-radius:9px;padding:11px 18px;font-weight:700;cursor:pointer;white-space:nowrap">🔎 Look up</button>
+      </div>
+    </div>
+    <div id="lookupMsg" style="display:none;font-size:13px;border-radius:9px;padding:9px 12px;margin:-4px 0 12px"></div>
     <div class="vd-row">
-      <label class="fld"><span>Creator's Instagram handle</span><input type="text" name="handle" value="{{ old('handle') }}" placeholder="@their_handle" required></label>
       <label class="fld"><span>Their account type</span>
         <select name="account_type">
           <option value="">—</option>
@@ -87,6 +94,33 @@
 <div class="note" style="margin-bottom:18px">
   <strong>Being straight with you:</strong> real follower age and location are only visible to the account holder — no tool at this price can see them. This is a strong, honest read from public signals. For anyone you're serious about, ask for a screenshot of their Instagram Insights audience tab — every professional has one, and a refusal is an answer in itself.
 </div>
+
+<script>
+function lookupHandle(){
+  var h = document.getElementById('handle').value.trim();
+  var msg = document.getElementById('lookupMsg');
+  var btn = document.getElementById('lookupBtn');
+  if(!h){ show(msg,'Enter a handle first.','#fbeed0','#8a6d1c'); return; }
+  btn.disabled = true; btn.textContent = 'Looking…';
+  fetch('{{ route('tools.vetting.lookup') }}', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},
+    body: JSON.stringify({handle:h})
+  }).then(r=>r.json()).then(d=>{
+    btn.disabled=false; btn.textContent='🔎 Look up';
+    var f = d.fields||{};
+    setVal('followers',f.followers); setVal('following',f.following); setVal('posts',f.posts);
+    setVal('avg_likes',f.avg_likes); setVal('avg_comments',f.avg_comments); setVal('posts_per_week',f.posts_per_week);
+    setVal('based_location',f.based_location); setSel('account_type',f.account_type);
+    if(f.post_locations) setVal('post_locations',f.post_locations);
+    if(f.captions) setVal('captions',f.captions);
+    show(msg, d.message || (d.ok?'Prefilled — review below.':'Enter the numbers manually below.'), d.ok?'#dff3e6':'#fbeed0', d.ok?'#2E7D52':'#8a6d1c');
+  }).catch(()=>{ btn.disabled=false; btn.textContent='🔎 Look up'; show(msg,'Lookup failed — enter the numbers manually.','#fbe4e4','#a4283a'); });
+}
+function setVal(n,v){ if(v===undefined||v===null||v==='')return; var el=document.querySelector('[name="'+n+'"]'); if(el) el.value=v; }
+function setSel(n,v){ if(!v)return; var el=document.querySelector('select[name="'+n+'"]'); if(el) el.value=v; }
+function show(el,t,bg,fg){ el.textContent=t; el.style.display='block'; el.style.background=bg; el.style.color=fg; }
+</script>
 
 @if($history->isNotEmpty())
   <div class="vd-card hist">

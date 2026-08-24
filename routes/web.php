@@ -166,6 +166,7 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
 
     // Tools → The Vetting Desk (feature-flagged)
     Route::get('/tools/vetting', [VettingController::class, 'index'])->name('tools.vetting');
+    Route::post('/tools/vetting/lookup', [VettingController::class, 'lookup'])->name('tools.vetting.lookup');
     Route::post('/tools/vetting', [VettingController::class, 'run'])->name('tools.vetting.run');
     Route::get('/tools/vetting/{vetCheck}', [VettingController::class, 'result'])->name('tools.vetting.result');
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VetCheck;
+use App\Services\InstagramLookup;
 use App\Services\VettingEngine;
 use Illuminate\Http\Request;
 
@@ -28,6 +29,15 @@ class VettingController extends Controller
             'history' => VetCheck::whereIn('property_id', $this->accountPropertyIds())
                 ->latest()->limit(20)->get(),
         ]);
+    }
+
+    /** AJAX: auto-fetch a creator's public numbers to pre-fill the form. */
+    public function lookup(Request $r, InstagramLookup $ig)
+    {
+        $this->guard();
+        $r->validate(['handle' => ['required', 'string', 'max:120']]);
+
+        return response()->json($ig->lookup($r->input('handle')));
     }
 
     public function run(Request $r, VettingEngine $engine)

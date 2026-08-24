@@ -277,6 +277,17 @@ return [
     */
     'vetting' => [
         'provider' => env('RMC_VET_PROVIDER', 'assisted'),
+        /*
+        | Auto-fetch of public Instagram numbers via a third-party data API.
+        | Add RMC_IG_RAPIDAPI_KEY (from a RapidAPI Instagram scraper subscription)
+        | to enable reliable lookups; without it the lookup makes a best-effort
+        | public attempt that Instagram usually blocks, then falls back to manual.
+        */
+        'ig' => [
+            'rapidapi_key'  => env('RMC_IG_RAPIDAPI_KEY'),
+            'rapidapi_host' => env('RMC_IG_RAPIDAPI_HOST', 'instagram-scraper-api2.p.rapidapi.com'),
+            'enabled'       => (bool) env('RMC_IG_RAPIDAPI_KEY'),
+        ],
         // Minimum "good" engagement rate (%) by follower band ceiling.
         'benchmarks' => [
             2000    => 6.0,   // < 2k followers
