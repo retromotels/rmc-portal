@@ -24,31 +24,30 @@
     <nav class="nav">
       <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><span class="ic">◎</span>Dashboard</a>
       <a href="{{ route('registration.index') }}" class="{{ request()->routeIs('registration.index') ? 'active' : '' }}"><span class="ic">📝</span>Property Setup @if($pending)<span class="cnt">{{ $pending }}</span>@endif</a>
-      <a href="{{ route('health') }}" class="{{ request()->routeIs('health') ? 'active' : '' }}"><span class="ic">🩺</span>Health Check</a>
       <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}"><span class="ic">ℹ️</span>About Us</a>
       <a href="{{ route('faq') }}" class="{{ request()->routeIs('faq') ? 'active' : '' }}"><span class="ic">❓</span>FAQ</a>
       <div style="font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#b7ab97;margin:16px 0 4px;padding:0 4px">Tools</div>
+      <a href="{{ route('health') }}" class="{{ request()->routeIs('health') ? 'active' : '' }}"><span class="ic">🩺</span>Health Check</a>
       <a href="{{ route('tools.chat-widget') }}" class="{{ request()->routeIs('tools.chat-widget') ? 'active' : '' }}"><span class="ic">💬</span>Chat Widget</a>
       <a href="{{ route('jobs.index') }}" class="{{ request()->routeIs('jobs.*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs</a>
       @if(config('rmc.features.vetting'))
         <a href="{{ route('tools.vetting') }}" class="{{ request()->routeIs('tools.vetting*') ? 'active' : '' }}"><span class="ic">🔎</span>IG Checker</a>
       @endif
       @if(config('rmc.features.documents'))
-        <a href="{{ route('tools.documents') }}" class="{{ request()->routeIs('tools.documents*') ? 'active' : '' }}"><span class="ic">📄</span>Documents</a>
+        <a href="{{ route('tools.documents') }}" class="{{ request()->routeIs('tools.documents*') ? 'active' : '' }}"><span class="ic">📚</span>Resource Library</a>
       @endif
       @if(config('rmc.features.suppliers'))
-        <a href="{{ route('tools.suppliers') }}" class="{{ request()->routeIs('tools.suppliers*') ? 'active' : '' }}"><span class="ic">📚</span>Resource Library</a>
+        <a href="{{ route('tools.suppliers') }}" class="{{ request()->routeIs('tools.suppliers*') ? 'active' : '' }}"><span class="ic">📇</span>Suppliers</a>
       @endif
-      @php
-        $soon = ['✨|AI Assist'];
-        if (!config('rmc.features.documents')) $soon[] = '📤|My Documents';
-        if (!config('rmc.features.suppliers')) $soon[] = '📚|Resource Library';
-        $soon = array_merge($soon, ['🎙️|Monthly Roundtable','👥|Community']);
-      @endphp
-      @foreach($soon as $s)
-        @php [$ic,$lbl] = explode('|', $s); @endphp
-        <a class="soon" title="Launching 1 September"><span class="ic">{{ $ic }}</span>{{ $lbl }}<span class="soon-tag">SOON</span></a>
-      @endforeach
+      @if(\App\Models\Setting::bool('module_ai_assist'))
+        <a href="{{ route('tools.ai-assist') }}" class="{{ request()->routeIs('tools.ai-assist') ? 'active' : '' }}"><span class="ic">✨</span>AI Assist</a>
+      @endif
+      @if(\App\Models\Setting::bool('module_roundtable'))
+        <a href="{{ route('tools.roundtable') }}" class="{{ request()->routeIs('tools.roundtable') ? 'active' : '' }}"><span class="ic">🎙️</span>Monthly Roundtable</a>
+      @endif
+      @if(\App\Models\Setting::bool('module_community'))
+        <a href="{{ route('tools.community') }}" class="{{ request()->routeIs('tools.community') ? 'active' : '' }}"><span class="ic">👥</span>Community</a>
+      @endif
       <a href="{{ route('account') }}" class="{{ request()->routeIs('account') ? 'active' : '' }}"><span class="ic">⚙️</span>Account</a>
     </nav>
     <div class="sb-foot">

@@ -26,12 +26,13 @@
       <a href="{{ route('admin.activity') }}" class="{{ request()->routeIs('admin.activity') ? 'active' : '' }}"><span class="ic">📈</span>User Log</a>
       <a href="{{ route('admin.listings.index') }}" class="{{ request()->routeIs('admin.listings.*') ? 'active' : '' }}"><span class="ic">✅</span>Listing Check</a>
       <a href="{{ route('admin.content.edit') }}" class="{{ request()->routeIs('admin.content.*') ? 'active' : '' }}"><span class="ic">📰</span>Content</a>
+      <a href="{{ route('admin.modules') }}" class="{{ request()->routeIs('admin.modules*') ? 'active' : '' }}"><span class="ic">🎛️</span>Modules</a>
       <a href="{{ route('admin.policies') }}" class="{{ request()->routeIs('admin.policies') ? 'active' : '' }}"><span class="ic">📄</span>Signed Policies</a>
       @if(config('rmc.features.documents'))
-        <a href="{{ route('admin.documents') }}" class="{{ request()->routeIs('admin.documents*') ? 'active' : '' }}"><span class="ic">📑</span>Documents</a>
+        <a href="{{ route('admin.documents') }}" class="{{ request()->routeIs('admin.documents*') ? 'active' : '' }}"><span class="ic">📚</span>Resource Library</a>
       @endif
       @if(config('rmc.features.suppliers'))
-        <a href="{{ route('admin.suppliers') }}" class="{{ request()->routeIs('admin.suppliers*') ? 'active' : '' }}"><span class="ic">📚</span>Resource Library</a>
+        <a href="{{ route('admin.suppliers') }}" class="{{ request()->routeIs('admin.suppliers*') ? 'active' : '' }}"><span class="ic">📇</span>Suppliers</a>
       @endif
     </nav>
     <div class="sb-foot">

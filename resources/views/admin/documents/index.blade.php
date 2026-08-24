@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Documents')
+@section('title', 'Resource Library')
 @section('content')
 <style>
   .dh{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px}
@@ -21,8 +21,8 @@
 
 <div class="dh">
   <div>
-    <h1>Documents</h1>
-    <div style="font-size:13px;color:#8a7d68;margin-top:3px">SOP templates members can personalise and download. Track which perform best.</div>
+    <h1>Resource Library</h1>
+    <div style="font-size:13px;color:#8a7d68;margin-top:3px">SOP templates and resources members can personalise and download. Track which perform best.</div>
   </div>
   <a class="dadd" href="{{ route('admin.documents.create') }}">+ New document</a>
 </div>

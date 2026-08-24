@@ -1,5 +1,5 @@
 @extends('layouts.portal')
-@section('title', 'Documents')
+@section('title', 'Resource Library')
 @section('content')
 <style>
   .dh1{font-family:Oswald,sans-serif;font-size:26px;margin:0 0 3px}
@@ -13,7 +13,7 @@
   .dempty{background:#fff;border:1px solid #ece1cd;border-radius:14px;padding:40px;text-align:center;color:#8a7d68}
 </style>
 
-<h1 class="dh1">Documents</h1>
+<h1 class="dh1">Resource Library</h1>
 <p class="dsub">Ready-to-use templates and SOPs, prefilled with your property's details. Open one, tweak it, and download a Word copy.</p>
 
 <div class="dgrid">

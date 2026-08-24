@@ -8,17 +8,37 @@ class Setting extends Model
 {
     protected $fillable = ['key', 'value'];
 
-    /** Read a JSON setting (returns $default if unset). */
+    /** Per-request cache of all settings. */
+    private static ?array $cache = null;
+
+    private static function all_cached(): array
+    {
+        if (self::$cache === null) {
+            try {
+                self::$cache = self::query()->pluck('value', 'key')->all();
+            } catch (\Throwable $e) {
+                self::$cache = []; // table not migrated yet — fall back to defaults
+            }
+        }
+        return self::$cache;
+    }
+
     public static function get(string $key, $default = null)
     {
-        $row = static::query()->where('key', $key)->first();
-        if (!$row || $row->value === null) return $default;
-        $decoded = json_decode($row->value, true);
-        return $decoded === null && $row->value !== 'null' ? $default : $decoded;
+        return self::all_cached()[$key] ?? $default;
+    }
+
+    public static function bool(string $key, bool $default = false): bool
+    {
+        $v = self::get($key, $default ? '1' : '0');
+        return in_array((string) $v, ['1', 'true', 'on', 'yes'], true);
     }
 
     public static function put(string $key, $value): void
     {
-        static::updateOrCreate(['key' => $key], ['value' => json_encode($value)]);
+        self::updateOrCreate(['key' => $key], ['value' => $value]);
+        if (self::$cache !== null) {
+            self::$cache[$key] = $value;
+        }
     }
 }

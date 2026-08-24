@@ -14,6 +14,9 @@ use App\Http\Controllers\ChatWidgetController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\VettingController;
+use App\Http\Controllers\AIAssistController;
+use App\Http\Controllers\ModulePageController;
+use App\Http\Controllers\Admin\ModulesController;
 use App\Http\Controllers\Admin\DocumentAdminController;
 use App\Http\Controllers\Admin\SupplierAdminController;
 use App\Http\Controllers\PublicWidgetController;
@@ -170,6 +173,13 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
     Route::post('/tools/vetting', [VettingController::class, 'run'])->name('tools.vetting.run');
     Route::get('/tools/vetting/{vetCheck}', [VettingController::class, 'result'])->name('tools.vetting.result');
 
+    // Tools → AI Assist + content modules (admin-toggleable)
+    Route::get('/tools/ai-assist', [AIAssistController::class, 'index'])->name('tools.ai-assist');
+    Route::post('/tools/ai-assist/ask', [AIAssistController::class, 'ask'])->name('tools.ai-assist.ask');
+    Route::post('/tools/ai-assist/clear', [AIAssistController::class, 'clear'])->name('tools.ai-assist.clear');
+    Route::get('/tools/roundtable', [ModulePageController::class, 'roundtable'])->name('tools.roundtable');
+    Route::get('/tools/community', [ModulePageController::class, 'community'])->name('tools.community');
+
     // Tools → Suppliers directory (feature-flagged)
     Route::get('/tools/suppliers', [SupplierController::class, 'index'])->name('tools.suppliers');
     Route::get('/tools/suppliers/{supplier}', [SupplierController::class, 'show'])->name('tools.suppliers.show');
@@ -220,6 +230,10 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     // Admin-controlled property content
     Route::get('/content', [ContentController::class, 'edit'])->name('content.edit');
     Route::put('/content', [ContentController::class, 'update'])->name('content.update');
+
+    // Member modules on/off + content
+    Route::get('/modules', [ModulesController::class, 'index'])->name('modules');
+    Route::put('/modules', [ModulesController::class, 'update'])->name('modules.update');
 
     // SOP Documents (feature-flagged)
     Route::get('/documents', [DocumentAdminController::class, 'index'])->name('documents');
