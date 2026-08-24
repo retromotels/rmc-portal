@@ -6,36 +6,46 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Simple key/value settings store powering admin-toggleable modules
- * (AI Assist, Monthly Roundtable, Community) and their editable content.
+ * Seeds the module-toggle + content keys into the existing key/value `settings`
+ * table (created earlier). Idempotent: only inserts keys that aren't present, so
+ * it's safe to re-run and never touches other settings.
  */
 return new class extends Migration
 {
+    private array $defaults = [
+        'module_ai_assist'  => '1',
+        'module_roundtable' => '0',
+        'module_community'  => '0',
+        'roundtable_title'  => 'The Monthly Roundtable',
+        'roundtable_body'   => "Once a month we get the collective together on a call — a chance to swap what's working, hear from a guest speaker, and put your questions to head office.\n\nDetails for the next session appear here. Add the link below and members can join in a click.",
+        'roundtable_link'   => '',
+        'community_title'   => 'The Community',
+        'community_body'    => "You're not running your motel alone. The collective community is where members share advice, wins, suppliers and the odd war story.\n\nJoin the group below to get involved.",
+        'community_link'    => '',
+    ];
+
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
-            $table->id();
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('settings')) {
+            Schema::create('settings', function (Blueprint $table) {
+                $table->id();
+                $table->string('key')->unique();
+                $table->longText('value')->nullable();
+                $table->timestamps();
+            });
+        }
 
         $now = now();
-        DB::table('settings')->insert([
-            ['key' => 'module_ai_assist',  'value' => '1', 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'module_roundtable', 'value' => '0', 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'module_community',  'value' => '0', 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'roundtable_title',  'value' => 'The Monthly Roundtable', 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'roundtable_body',   'value' => "Once a month we get the collective together on a call — a chance to swap what's working, hear from a guest speaker, and put your questions to head office.\n\nDetails for the next session appear here. Add the link below and members can join in a click.", 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'roundtable_link',   'value' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'community_title',   'value' => 'The Community', 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'community_body',    'value' => "You're not running your motel alone. The collective community is where members share advice, wins, suppliers and the odd war story.\n\nJoin the group below to get involved.", 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'community_link',     'value' => '', 'created_at' => $now, 'updated_at' => $now],
-        ]);
+        foreach ($this->defaults as $key => $value) {
+            DB::table('settings')->insertOrIgnore([
+                'key' => $key, 'value' => $value, 'created_at' => $now, 'updated_at' => $now,
+            ]);
+        }
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('settings');
+        // Only remove the keys we added — never drop the shared table.
+        DB::table('settings')->whereIn('key', array_keys($this->defaults))->delete();
     }
 };
