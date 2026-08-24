@@ -13,6 +13,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ChatWidgetController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\VettingController;
 use App\Http\Controllers\Admin\DocumentAdminController;
 use App\Http\Controllers\Admin\SupplierAdminController;
 use App\Http\Controllers\PublicWidgetController;
@@ -23,6 +24,9 @@ use App\Http\Controllers\Jobs\PublicJobController;
 use App\Http\Controllers\Jobs\SeekerAuthController;
 use App\Http\Controllers\Jobs\SeekerProfileController;
 use App\Http\Controllers\Jobs\ApplicationController;
+use App\Http\Controllers\Jobs\EmployerAuthController;
+use App\Http\Controllers\Jobs\EmployerController;
+use App\Http\Controllers\Jobs\EmployerBillingController;
 use App\Models\User;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Middleware\LogActivity;
@@ -60,6 +64,21 @@ Route::domain(config('rmc.jobs_host'))->group(function () {
     Route::get('/jobs/{slug}/apply', [ApplicationController::class, 'create'])->name('jobs.apply');
     Route::post('/jobs/{slug}/apply', [ApplicationController::class, 'store']);
     Route::get('/account', [ApplicationController::class, 'dashboard'])->name('seeker.dashboard');
+
+    // External employers: pricing, accounts, post-a-job, billing
+    Route::get('/post-a-job', [EmployerController::class, 'pricing'])->name('employers.pricing');
+    Route::get('/employers/register', [EmployerAuthController::class, 'showRegister'])->name('employer.register');
+    Route::post('/employers/register', [EmployerAuthController::class, 'register']);
+    Route::get('/employers/login', [EmployerAuthController::class, 'showLogin'])->name('employer.login');
+    Route::post('/employers/login', [EmployerAuthController::class, 'login']);
+    Route::post('/employers/logout', [EmployerAuthController::class, 'logout'])->name('employer.logout');
+    Route::get('/employers/dashboard', [EmployerController::class, 'dashboard'])->name('employer.dashboard');
+    Route::get('/employers/post', [EmployerController::class, 'createJob'])->name('employer.job.create');
+    Route::post('/employers/post', [EmployerController::class, 'storeJob'])->name('employer.job.store');
+    Route::post('/employers/buy/{tier}', [EmployerBillingController::class, 'checkout'])->name('employer.buy');
+    Route::get('/employers/buy/success', [EmployerBillingController::class, 'success'])->name('employer.buy.success');
+    Route::get('/employers/buy/cancel', [EmployerBillingController::class, 'cancel'])->name('employer.buy.cancel');
+    Route::post('/employers/enquire', [EmployerBillingController::class, 'enquire'])->name('employer.enquire');
 
     // Seeker profile: details, photo, resume library
     Route::get('/account/profile', [SeekerProfileController::class, 'show'])->name('seeker.profile');
@@ -139,6 +158,11 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
     Route::get('/tools/documents', [DocumentController::class, 'index'])->name('tools.documents');
     Route::get('/tools/documents/{document}', [DocumentController::class, 'show'])->name('tools.documents.show');
     Route::post('/tools/documents/{document}/download', [DocumentController::class, 'download'])->name('tools.documents.download');
+
+    // Tools → The Vetting Desk (feature-flagged)
+    Route::get('/tools/vetting', [VettingController::class, 'index'])->name('tools.vetting');
+    Route::post('/tools/vetting', [VettingController::class, 'run'])->name('tools.vetting.run');
+    Route::get('/tools/vetting/{vetCheck}', [VettingController::class, 'result'])->name('tools.vetting.result');
 
     // Tools → Suppliers directory (feature-flagged)
     Route::get('/tools/suppliers', [SupplierController::class, 'index'])->name('tools.suppliers');

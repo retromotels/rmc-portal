@@ -18,6 +18,12 @@ return [
             'driver' => 'session',
             'provider' => 'seekers',
         ],
+
+        // External (non-member) employers posting paid jobs
+        'employer' => [
+            'driver' => 'session',
+            'provider' => 'employers',
+        ],
     ],
 
     'providers' => [
@@ -29,6 +35,11 @@ return [
         'seekers' => [
             'driver' => 'eloquent',
             'model' => App\Models\JobSeeker::class,
+        ],
+
+        'employers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Employer::class,
         ],
     ],
 

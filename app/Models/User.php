@@ -15,6 +15,7 @@ class User extends Authenticatable
         'name', 'email', 'password', 'role', 'account_id', 'current_property_id',
         'motel', 'band', 'tier',
         'phone', 'bio', 'photo_path', 'loc', 'details_complete', 'founding',
+        'ig_handle', 'drive_market', 'guest_type',
         'cancel_requested_at', 'pending_reminded_at',
         'claim_token', 'claimed_at', 'created_by_admin',
     ];

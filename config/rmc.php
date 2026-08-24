@@ -263,8 +263,69 @@ return [
 
     // Staging-only features (kept off in production until sign-off).
     'features' => [
-        'documents' => (bool) env('RMC_FEATURE_DOCUMENTS', false),
-        'suppliers' => (bool) env('RMC_FEATURE_SUPPLIERS', false),
+        'documents'     => (bool) env('RMC_FEATURE_DOCUMENTS', false),
+        'suppliers'     => (bool) env('RMC_FEATURE_SUPPLIERS', false),
+        'vetting'       => (bool) env('RMC_FEATURE_VETTING', false),
+        'external_jobs' => (bool) env('RMC_FEATURE_EXTERNAL_JOBS', false),
+    ],
+
+    /*
+    | The Vetting Desk (influencer checker). Engagement benchmarks by follower
+    | band and the weighted scoring dimensions. The Instagram data provider is
+    | pluggable: 'assisted' (numbers entered / screenshot) now, 'graph' (Meta
+    | Business Discovery) later — set RMC_VET_PROVIDER to switch.
+    */
+    'vetting' => [
+        'provider' => env('RMC_VET_PROVIDER', 'assisted'),
+        // Minimum "good" engagement rate (%) by follower band ceiling.
+        'benchmarks' => [
+            2000    => 6.0,   // < 2k followers
+            10000   => 3.5,   // nano
+            50000   => 2.5,   // micro
+            500000  => 1.7,   // mid
+            100000000 => 1.2, // large
+        ],
+        // Weighted scoring dimensions (must total 100).
+        'weights' => [
+            'audience_map'    => 30,
+            'engagement'      => 28,
+            'guest_match'     => 22,
+            'following_size'  => 12,
+            'audience_quality' => 8,
+        ],
+    ],
+
+    /*
+    | External (non-member) job posting. Tiers mirror the reference pricing.
+    | Fixed tiers checkout via Stripe (price ids from .env); 'custom' is an
+    | enquiry that emails head office. Stripe stays dormant until keys are set.
+    */
+    'external_jobs' => [
+        'currency' => env('RMC_JOBS_CURRENCY', 'aud'),
+        'tiers' => [
+            'one_shot' => [
+                'name' => 'One Shot', 'price' => 300, 'credits' => 1,
+                'blurb' => 'One job ad, live on the board. Self-serve, posted in minutes. Applications straight to your inbox.',
+                'stripe_price' => env('STRIPE_PRICE_ONE_SHOT'),
+            ],
+            'three_pack' => [
+                'name' => 'The 3-Pack', 'price' => 600, 'credits' => 3,
+                'blurb' => "Three job credits — buy two, the third's free. Use them whenever; credits don't expire.",
+                'stripe_price' => env('STRIPE_PRICE_THREE_PACK'),
+            ],
+            'top_shelf' => [
+                'name' => 'Top Shelf', 'price' => null, 'credits' => 0,
+                'blurb' => 'Bulk credits for brands hiring all year, featured slots and amplification. Priced for your brand — talk to us.',
+                'stripe_price' => null,
+            ],
+        ],
+    ],
+
+    'stripe' => [
+        'key'            => env('STRIPE_KEY'),        // publishable
+        'secret'         => env('STRIPE_SECRET'),     // secret
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'live'           => (bool) env('STRIPE_SECRET'),
     ],
 
     // Supplier directory categories (key => label).

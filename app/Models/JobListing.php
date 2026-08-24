@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class JobListing extends Model
 {
     protected $fillable = [
-        'user_id', 'employer', 'source', 'source_ref', 'title', 'slug',
+        'user_id', 'employer_id', 'employer', 'source', 'source_ref', 'title', 'slug',
         'employment_type', 'department', 'location', 'state', 'pay', 'salary_annual',
         'description', 'status', 'reject_reason', 'approved_at', 'closes_at',
     ];
@@ -36,6 +36,11 @@ class JobListing extends Model
     public function property()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function externalEmployer()
+    {
+        return $this->belongsTo(Employer::class, 'employer_id');
     }
 
     public function applications()

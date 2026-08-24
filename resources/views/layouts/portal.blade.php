@@ -30,6 +30,9 @@
       <div style="font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#b7ab97;margin:16px 0 4px;padding:0 4px">Tools</div>
       <a href="{{ route('tools.chat-widget') }}" class="{{ request()->routeIs('tools.chat-widget') ? 'active' : '' }}"><span class="ic">💬</span>Chat Widget</a>
       <a href="{{ route('jobs.index') }}" class="{{ request()->routeIs('jobs.*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs</a>
+      @if(config('rmc.features.vetting'))
+        <a href="{{ route('tools.vetting') }}" class="{{ request()->routeIs('tools.vetting*') ? 'active' : '' }}"><span class="ic">🔎</span>Vetting Desk</a>
+      @endif
       @if(config('rmc.features.documents'))
         <a href="{{ route('tools.documents') }}" class="{{ request()->routeIs('tools.documents*') ? 'active' : '' }}"><span class="ic">📄</span>Documents</a>
       @endif

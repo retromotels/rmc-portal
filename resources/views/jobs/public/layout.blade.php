@@ -64,6 +64,9 @@
   </a>
   <div class="nav-links">
     <a href="{{ route('jobs.board') }}">All jobs</a>
+    @if(config('rmc.features.external_jobs'))
+      <a href="{{ route('employers.pricing') }}">List a job</a>
+    @endif
     @if($seeker)
       <a href="{{ route('seeker.dashboard') }}">My applications</a>
       <a class="nav-me" href="{{ route('seeker.profile') }}">
