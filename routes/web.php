@@ -65,7 +65,21 @@ Route::domain(config('rmc.jobs_host'))->group(function () {
     Route::post('/jobs/{slug}/apply', [ApplicationController::class, 'store']);
     Route::get('/account', [ApplicationController::class, 'dashboard'])->name('seeker.dashboard');
 
-    // External employers: pricing, accounts, post-a-job, billing
+    // Seeker profile: details, photo, resume library
+    Route::get('/account/profile', [SeekerProfileController::class, 'show'])->name('seeker.profile');
+    Route::post('/account/profile', [SeekerProfileController::class, 'update'])->name('seeker.profile.update');
+    Route::post('/account/avatar', [SeekerProfileController::class, 'uploadAvatar'])->name('seeker.avatar.upload');
+    Route::get('/account/avatar/{seeker}', [SeekerProfileController::class, 'avatar'])->name('seeker.avatar');
+    Route::post('/account/resumes', [SeekerProfileController::class, 'addResume'])->name('seeker.resume.add');
+    Route::post('/account/resumes/{resume}/default', [SeekerProfileController::class, 'setDefaultResume'])->name('seeker.resume.default');
+    Route::delete('/account/resumes/{resume}', [SeekerProfileController::class, 'deleteResume'])->name('seeker.resume.delete');
+});
+
+/*
+| External (non-member) employers — host-agnostic so they work on the jobs host
+| in production and on staging for review. Controllers are feature-flagged.
+*/
+Route::group([], function () {
     Route::get('/post-a-job', [EmployerController::class, 'pricing'])->name('employers.pricing');
     Route::get('/employers/register', [EmployerAuthController::class, 'showRegister'])->name('employer.register');
     Route::post('/employers/register', [EmployerAuthController::class, 'register']);
@@ -79,15 +93,6 @@ Route::domain(config('rmc.jobs_host'))->group(function () {
     Route::get('/employers/buy/success', [EmployerBillingController::class, 'success'])->name('employer.buy.success');
     Route::get('/employers/buy/cancel', [EmployerBillingController::class, 'cancel'])->name('employer.buy.cancel');
     Route::post('/employers/enquire', [EmployerBillingController::class, 'enquire'])->name('employer.enquire');
-
-    // Seeker profile: details, photo, resume library
-    Route::get('/account/profile', [SeekerProfileController::class, 'show'])->name('seeker.profile');
-    Route::post('/account/profile', [SeekerProfileController::class, 'update'])->name('seeker.profile.update');
-    Route::post('/account/avatar', [SeekerProfileController::class, 'uploadAvatar'])->name('seeker.avatar.upload');
-    Route::get('/account/avatar/{seeker}', [SeekerProfileController::class, 'avatar'])->name('seeker.avatar');
-    Route::post('/account/resumes', [SeekerProfileController::class, 'addResume'])->name('seeker.resume.add');
-    Route::post('/account/resumes/{resume}/default', [SeekerProfileController::class, 'setDefaultResume'])->name('seeker.resume.default');
-    Route::delete('/account/resumes/{resume}', [SeekerProfileController::class, 'deleteResume'])->name('seeker.resume.delete');
 });
 
 Route::get('/', fn () => redirect()->route('register'));
