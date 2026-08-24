@@ -2,15 +2,29 @@
 @section('title', 'Jobs at independent motels')
 @section('head')
 <style>
-  .controls{background:#fff;border-bottom:1px solid var(--bone);padding:16px 0}
+  /* AI search — the hero of the filter area */
+  .ai-band{background:linear-gradient(180deg,var(--cream),var(--bone));border-bottom:1px solid var(--bone);padding:22px 0}
+  .ai-form{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
+  .ai-in{flex:1;min-width:240px;position:relative;display:flex;align-items:center}
+  .ai-in .spark{position:absolute;left:15px;font-size:17px;pointer-events:none}
+  .ai-in input{width:100%;padding:14px 16px 14px 42px;border:2px solid var(--peach);border-radius:12px;font:inherit;font-size:15px;background:#fffdf6;box-shadow:0 8px 22px rgba(224,73,29,.10)}
+  .ai-in input:focus{outline:none;border-color:var(--rust)}
+  .ai-hint{font-size:12.5px;color:var(--rust-ink);margin-top:9px;font-weight:600}
+  .ai-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff7e9;border:1px solid var(--peach);border-radius:11px;padding:11px 14px;font-size:13.5px;color:var(--ink-soft);margin-top:12px}
+  .ai-note b{color:var(--rust-ink)}
+  .ai-note a{color:var(--rust);font-weight:700;text-decoration:none}
+  /* Standard filters — sand toned, flows with the page */
+  .controls{background:transparent;border-bottom:1px solid var(--bone);padding:16px 0}
   .cform{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .cform input[type=text],.cform select{padding:11px 14px;border:1.5px solid var(--bone);border-radius:9px;font:inherit;font-size:14px;background:var(--paper)}
+  .cform input[type=text],.cform select{padding:11px 14px;border:1.5px solid var(--peach);border-radius:9px;font:inherit;font-size:14px;background:var(--paper);color:var(--ink)}
   .cform input[type=text]{flex:1;min-width:200px}
+  .cform input[type=text]::placeholder{color:#9a8f78}
   .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  .chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--bone);background:#fff;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink-soft)}
+  .chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--peach);background:var(--paper);font-size:13px;font-weight:600;text-decoration:none;color:var(--ink-soft)}
+  .chip:hover{border-color:var(--rust)}
   .chip.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
-  .result-meta{font-size:13.5px;color:var(--ink-soft);margin:20px 0 14px}
-  .jobs{display:grid;gap:14px}
+  .result-meta{font-size:13.5px;color:var(--ink-soft);margin:22px 0 16px}
+  .jobs{display:grid;gap:20px}
   .jcard{background:#fff;border:1px solid var(--bone);border-radius:16px;padding:20px 22px;box-shadow:0 8px 24px rgba(31,41,51,.06);display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;transition:transform .12s,box-shadow .12s;text-decoration:none;color:inherit}
   .jcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
   .jc-main{flex:1;min-width:260px}
@@ -39,6 +53,33 @@
     <p class="sub">Front desks, housekeeping, kitchens and more at independent motels around the country. Real places run by real people — find your next role below.</p>
   </div>
 </header>
+
+<section class="ai-band">
+  <div class="wrap">
+    <form class="ai-form" method="GET" action="{{ route('jobs.board') }}">
+      <div class="ai-in">
+        <span class="spark">✨</span>
+        <input type="text" name="ai" value="{{ $aiQuery ?? '' }}" placeholder="Describe your ideal role — e.g. “housekeeping in SA over $50k”">
+      </div>
+      <button class="btn btn-rust" type="submit">AI search</button>
+    </form>
+    <div class="ai-hint">✨ Smart search — tell us what you want in plain English and we'll set the filters for you.</div>
+
+    @if(!empty($aiQuery))
+      <div class="ai-note">
+        <span>✨ Understood <b>“{{ $aiQuery }}”</b> as:</span>
+        @php $bits = []; @endphp
+        @if($dept) @php $bits[] = config('rmc.job_departments.'.$dept); @endphp @endif
+        @if($state) @php $bits[] = config('rmc.job_states.'.$state); @endphp @endif
+        @if($pay) @php $bits[] = config('rmc.salary_bands.'.$pay).' pay'; @endphp @endif
+        @if($type) @php $bits[] = config('rmc.employment_types.'.$type); @endphp @endif
+        @if($kw) @php $bits[] = '“'.$kw.'”'; @endphp @endif
+        <span><b>{{ count($bits) ? implode(' · ', $bits) : 'all open roles' }}</b></span>
+        <a href="{{ route('jobs.board') }}">Clear ✕</a>
+      </div>
+    @endif
+  </div>
+</section>
 
 <section class="controls">
   <div class="wrap">
@@ -76,6 +117,7 @@
 <main class="wrap">
   <div class="result-meta">{{ number_format($jobs->total()) }} open {{ $jobs->total() === 1 ? 'role' : 'roles' }}@if($kw) matching “{{ $kw }}”@endif</div>
 
+  <div class="jobs">
   @forelse($jobs as $job)
     <a class="jcard" href="{{ route('jobs.public.show', $job->slug) }}">
       <div class="jc-main">
@@ -93,6 +135,7 @@
   @empty
     <div class="empty">@if($kw || $type || $dept || $state || $pay)No roles match those filters — <a href="{{ route('jobs.board') }}" style="color:var(--rust)">clear filters</a> and check back soon.@else No open roles right now — check back soon.@endif</div>
   @endforelse
+  </div>
 
   @if($jobs->hasPages())
     <div class="pager">

@@ -34,7 +34,20 @@
         <label class="fld"><span>Email</span><input type="email" name="email" value="{{ old('email', $seeker->email) }}" required></label>
         <label class="fld"><span>Phone (optional)</span><input type="text" name="phone" value="{{ old('phone', $seeker->phone) }}"></label>
         <label class="fld"><span>Message to the property</span><textarea name="message" rows="5" placeholder="A few lines about you and why you're a great fit…">{{ old('message') }}</textarea></label>
-        <label class="fld"><span>CV / résumé (optional)</span><input type="file" name="cv" accept=".pdf,.doc,.docx"></label>
+
+        @if($resumes->isNotEmpty())
+          <label class="fld"><span>Use a saved resume</span>
+            <select name="resume_id" style="width:100%;padding:12px 14px;border:1.5px solid var(--bone);border-radius:9px;font:inherit;font-size:15px;background:var(--paper)">
+              @foreach($resumes as $rz)
+                <option value="{{ $rz->id }}" @selected($rz->is_default)>{{ $rz->original_name }}@if($rz->is_default) (default)@endif</option>
+              @endforeach
+              <option value="">— None / upload new below —</option>
+            </select>
+          </label>
+          <p class="hint">Manage your resumes on <a href="{{ route('seeker.profile') }}" style="color:var(--rust)">your profile</a>.</p>
+        @endif
+
+        <label class="fld"><span>{{ $resumes->isNotEmpty() ? 'Or upload a different CV' : 'CV / résumé (optional)' }}</span><input type="file" name="cv" accept=".pdf,.doc,.docx"></label>
         <p class="hint">PDF or Word, up to 6&nbsp;MB.</p>
         <button class="btn btn-rust btn-full" type="submit">Send application</button>
       </form>

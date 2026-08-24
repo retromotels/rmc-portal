@@ -24,10 +24,13 @@
 
 @if(session('status'))<div class="status">{{ session('status') }}</div>@endif
 
-<div class="jt-tabs">
-  @foreach(['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected', 'closed' => 'Closed'] as $k => $lbl)
-    <a href="{{ route('admin.jobs', ['status' => $k]) }}" class="{{ $status === $k ? 'on' : '' }}">{{ $lbl }} <span class="n">{{ $counts[$k] ?? 0 }}</span></a>
-  @endforeach
+<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+  <div class="jt-tabs">
+    @foreach(['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected', 'closed' => 'Closed'] as $k => $lbl)
+      <a href="{{ route('admin.jobs', ['status' => $k]) }}" class="{{ $status === $k ? 'on' : '' }}">{{ $lbl }} <span class="n">{{ $counts[$k] ?? 0 }}</span></a>
+    @endforeach
+  </div>
+  <a href="{{ route('admin.jobs.create') }}" style="background:#e0491d;color:#fff;border-radius:9px;padding:9px 16px;font-weight:700;text-decoration:none;font-family:Oswald,sans-serif;letter-spacing:.4px;white-space:nowrap">+ Add job</a>
 </div>
 
 @forelse($jobs as $job)

@@ -29,7 +29,11 @@
   .nav-links{display:flex;gap:20px;align-items:center;font-weight:600;font-size:14px}
   .nav-links a,.nav-links button{text-decoration:none;color:var(--ink-soft);background:none;border:none;font:inherit;cursor:pointer}
   .nav-links a:hover{color:var(--rust)}
-  .nav-cta{background:var(--rust);color:#fff !important;padding:8px 15px;border-radius:8px}
+  /* Distinct account button — teal pill so it stands apart from the rust hero/search */
+  .nav-cta{background:#1f7a6d;color:#fff !important;padding:9px 18px;border-radius:24px;font-weight:800;box-shadow:0 6px 16px rgba(31,122,109,.28);transition:transform .12s,box-shadow .12s}
+  .nav-cta:hover{color:#fff !important;transform:translateY(-1px);box-shadow:0 9px 20px rgba(31,122,109,.34)}
+  .nav-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--bone);vertical-align:middle}
+  .nav-me{display:inline-flex;align-items:center;gap:8px}
   /* Hero */
   header.hero{background:linear-gradient(180deg,#fff3d6,var(--cream));padding:52px 0 40px;border-bottom:1px solid var(--bone)}
   .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:800;color:var(--rust-ink)}
@@ -62,6 +66,10 @@
     <a href="{{ route('jobs.board') }}">All jobs</a>
     @if($seeker)
       <a href="{{ route('seeker.dashboard') }}">My applications</a>
+      <a class="nav-me" href="{{ route('seeker.profile') }}">
+        @if($seeker->avatar_path)<img class="nav-avatar" src="{{ route('seeker.avatar', $seeker) }}" alt="">@else<span class="nav-avatar" style="display:inline-grid;place-items:center;background:var(--peach);font-weight:800;color:var(--ink);border-color:transparent">{{ strtoupper(substr($seeker->name,0,1)) }}</span>@endif
+        My profile
+      </a>
       <form method="POST" action="{{ route('seeker.logout') }}" style="display:inline">@csrf<button type="submit">Log out</button></form>
     @else
       <a href="{{ route('seeker.login') }}">Log in</a>

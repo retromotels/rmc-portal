@@ -4,17 +4,29 @@ namespace App\Http\Controllers\Jobs;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobListing;
+use App\Services\AiJobSearch;
 use Illuminate\Http\Request;
 
 class PublicJobController extends Controller
 {
-    public function index(Request $r)
+    public function index(Request $r, AiJobSearch $ai)
     {
         $type  = $r->query('type');
         $dept  = $r->query('dept');
         $state = strtoupper((string) $r->query('state'));
         $pay   = (string) $r->query('pay');
         $kw    = trim((string) $r->query('q'));
+
+        // Natural-language search overrides the individual filters.
+        $aiQuery = trim((string) $r->query('ai'));
+        if ($aiQuery !== '') {
+            $parsed = $ai->parse($aiQuery);
+            $type  = $parsed['type'];
+            $dept  = $parsed['dept'];
+            $state = $parsed['state'];
+            $pay   = $parsed['pay'];
+            $kw    = $parsed['kw'];
+        }
 
         $q = JobListing::live()->with('property')->latest('approved_at');
 
@@ -37,12 +49,13 @@ class PublicJobController extends Controller
         }
 
         return view('jobs.public.index', [
-            'jobs'  => $q->paginate(24)->withQueryString(),
-            'type'  => $type,
-            'dept'  => $dept,
-            'state' => array_key_exists($state, config('rmc.job_states')) ? $state : '',
-            'pay'   => array_key_exists($pay, config('rmc.salary_bands')) ? $pay : '',
-            'kw'    => $kw,
+            'jobs'    => $q->paginate(24)->withQueryString(),
+            'type'    => $type,
+            'dept'    => $dept,
+            'state'   => array_key_exists($state, config('rmc.job_states')) ? $state : '',
+            'pay'     => array_key_exists($pay, config('rmc.salary_bands')) ? $pay : '',
+            'kw'      => $kw,
+            'aiQuery' => $aiQuery,
         ]);
     }
 

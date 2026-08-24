@@ -24,7 +24,12 @@ class ApplicationController extends Controller
         $applied = JobApplication::where('job_listing_id', $job->id)
             ->where('job_seeker_id', $seeker->id)->exists();
 
-        return view('jobs.public.apply', ['job' => $job, 'seeker' => $seeker, 'applied' => $applied]);
+        return view('jobs.public.apply', [
+            'job'     => $job,
+            'seeker'  => $seeker,
+            'applied' => $applied,
+            'resumes' => $seeker->resumes()->get(),
+        ]);
     }
 
     public function store(Request $r, string $slug)
@@ -36,14 +41,24 @@ class ApplicationController extends Controller
         $seeker = Auth::guard('seeker')->user();
 
         $data = $r->validate([
-            'name'    => ['required', 'string', 'max:120'],
-            'email'   => ['required', 'email', 'max:190'],
-            'phone'   => ['nullable', 'string', 'max:40'],
-            'message' => ['nullable', 'string', 'max:4000'],
-            'cv'      => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:6144'],
+            'name'      => ['required', 'string', 'max:120'],
+            'email'     => ['required', 'email', 'max:190'],
+            'phone'     => ['nullable', 'string', 'max:40'],
+            'message'   => ['nullable', 'string', 'max:4000'],
+            'cv'        => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:6144'],
+            'resume_id' => ['nullable', 'integer'],
         ]);
 
-        $cvPath = $r->hasFile('cv') ? $r->file('cv')->store('cvs', 'local') : null;
+        // A freshly uploaded CV wins; otherwise use a chosen saved resume.
+        $cvPath = null;
+        if ($r->hasFile('cv')) {
+            $cvPath = $r->file('cv')->store('cvs', 'local');
+        } elseif (!empty($data['resume_id'])) {
+            $resume = $seeker->resumes()->find($data['resume_id']);
+            $cvPath = $resume?->path;
+        } elseif ($default = $seeker->defaultResume()) {
+            $cvPath = $default->path;
+        }
 
         $app = JobApplication::create([
             'job_listing_id' => $job->id,

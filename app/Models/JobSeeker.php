@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class JobSeeker extends Authenticatable
 {
-    protected $fillable = ['name', 'email', 'password', 'phone', 'state'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'state', 'avatar_path', 'headline', 'bio', 'town'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -18,6 +18,16 @@ class JobSeeker extends Authenticatable
     public function applications()
     {
         return $this->hasMany(JobApplication::class);
+    }
+
+    public function resumes()
+    {
+        return $this->hasMany(JobSeekerResume::class)->latest('is_default')->latest();
+    }
+
+    public function defaultResume(): ?JobSeekerResume
+    {
+        return $this->resumes()->where('is_default', true)->first() ?? $this->resumes()->first();
     }
 
     /** The most recent application that carries an uploaded CV, if any. */

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\JobAdminController;
 use App\Http\Controllers\Admin\SeekerAdminController;
 use App\Http\Controllers\Jobs\PublicJobController;
 use App\Http\Controllers\Jobs\SeekerAuthController;
+use App\Http\Controllers\Jobs\SeekerProfileController;
 use App\Http\Controllers\Jobs\ApplicationController;
 use App\Models\User;
 use App\Http\Controllers\RegistrationController;
@@ -55,6 +56,15 @@ Route::domain(config('rmc.jobs_host'))->group(function () {
     Route::get('/jobs/{slug}/apply', [ApplicationController::class, 'create'])->name('jobs.apply');
     Route::post('/jobs/{slug}/apply', [ApplicationController::class, 'store']);
     Route::get('/account', [ApplicationController::class, 'dashboard'])->name('seeker.dashboard');
+
+    // Seeker profile: details, photo, resume library
+    Route::get('/account/profile', [SeekerProfileController::class, 'show'])->name('seeker.profile');
+    Route::post('/account/profile', [SeekerProfileController::class, 'update'])->name('seeker.profile.update');
+    Route::post('/account/avatar', [SeekerProfileController::class, 'uploadAvatar'])->name('seeker.avatar.upload');
+    Route::get('/account/avatar/{seeker}', [SeekerProfileController::class, 'avatar'])->name('seeker.avatar');
+    Route::post('/account/resumes', [SeekerProfileController::class, 'addResume'])->name('seeker.resume.add');
+    Route::post('/account/resumes/{resume}/default', [SeekerProfileController::class, 'setDefaultResume'])->name('seeker.resume.default');
+    Route::delete('/account/resumes/{resume}', [SeekerProfileController::class, 'deleteResume'])->name('seeker.resume.delete');
 });
 
 Route::get('/', fn () => redirect()->route('register'));
@@ -147,6 +157,9 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
 
     // Jobs approval queue
     Route::get('/jobs', [JobAdminController::class, 'index'])->name('jobs');
+    Route::get('/jobs/create', [JobAdminController::class, 'create'])->name('jobs.create');
+    Route::post('/jobs', [JobAdminController::class, 'store'])->name('jobs.store');
+    Route::get('/applications/{application}/cv', [JobAdminController::class, 'cvDownload'])->name('jobs.appcv');
     Route::post('/jobs/{job}/approve', [JobAdminController::class, 'approve'])->name('jobs.approve');
     Route::post('/jobs/{job}/reject', [JobAdminController::class, 'reject'])->name('jobs.reject');
     Route::get('/jobs/{job}/applicants', [JobAdminController::class, 'applicants'])->name('jobs.applicants');

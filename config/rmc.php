@@ -250,6 +250,23 @@ return [
     */
     'jobs_host' => env('RMC_JOBS_HOST', 'jobs.retromotels.com'),
 
+    /*
+    | Claude (Anthropic) API — powers the job board's natural-language search and
+    | any future AI features. Add ANTHROPIC_API_KEY to .env to enable; until then
+    | the board falls back to a built-in keyword parser, so search still works.
+    */
+    'ai' => [
+        'key'        => env('ANTHROPIC_API_KEY'),
+        'model'      => env('ANTHROPIC_MODEL', 'claude-3-5-haiku-latest'),
+        'enabled'    => (bool) env('ANTHROPIC_API_KEY'),
+    ],
+
+    // Staging-only features (kept off in production until sign-off).
+    'features' => [
+        'documents' => (bool) env('RMC_FEATURE_DOCUMENTS', false),
+        'suppliers' => (bool) env('RMC_FEATURE_SUPPLIERS', false),
+    ],
+
     'employment_types' => [
         'full-time' => 'Full-time',
         'part-time' => 'Part-time',
