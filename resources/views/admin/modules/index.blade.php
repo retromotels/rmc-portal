@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Modules')
 @section('content')
-@php($Setting = \App\Models\\App\Models\Setting::class)
 <style>
   .mh{font-family:Oswald,sans-serif;font-size:24px;margin:0 0 3px}
   .msub{font-size:13px;color:#8a7d68;margin-bottom:18px}
