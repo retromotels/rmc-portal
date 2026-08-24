@@ -1,5 +1,5 @@
 @extends('layouts.portal')
-@section('title', 'Suppliers')
+@section('title', 'Resource Library')
 @section('content')
 <style>
   .sh1{font-family:Oswald,sans-serif;font-size:26px;margin:0 0 3px}
@@ -21,8 +21,8 @@
 
 @if(session('status'))<div class="status">{{ session('status') }}</div>@endif
 
-<h1 class="sh1">Supplier directory</h1>
-<p class="ssub">Deals and offers negotiated for collective members. Save the ones you want, grab a code or link, or ask head office to set it up for you.</p>
+<h1 class="sh1">Resource Library</h1>
+<p class="ssub">Deals, offers and supplier resources negotiated for collective members. Save the ones you want, grab a code or link, or ask head office to set it up for you.</p>
 
 <div class="sfilters">
   <a class="schip {{ !$category && !$saved ? 'on' : '' }}" href="{{ route('tools.suppliers') }}">All</a>

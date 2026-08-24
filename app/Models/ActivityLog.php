@@ -9,7 +9,7 @@ class ActivityLog extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['user_id', 'account_id', 'path', 'label', 'ip', 'created_at'];
+    protected $fillable = ['kind', 'user_id', 'account_id', 'path', 'label', 'detail', 'ip', 'created_at'];
 
     protected function casts(): array
     {

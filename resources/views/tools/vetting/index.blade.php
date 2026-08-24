@@ -1,5 +1,5 @@
 @extends('layouts.portal')
-@section('title', 'The Vetting Desk')
+@section('title', 'IG Checker')
 @section('content')
 <style>
   .vd-hero{background:#1F2933;color:#F8EED6;border-radius:16px;padding:26px 28px;margin-bottom:20px}
@@ -30,7 +30,7 @@
 
 <div class="vd-hero">
   <div class="eb">Retro Motels Collective · Member tool</div>
-  <h1>The <em>Vetting Desk</em></h1>
+  <h1>The <em>IG Checker</em></h1>
   <p>Check an Instagram creator against your motel before you say yes. Enter what you can see on their public profile and we'll score the fit against your drive market and guest type — with a ready-to-send reply either way.</p>
 </div>
 

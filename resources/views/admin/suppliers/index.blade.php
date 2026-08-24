@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Suppliers')
+@section('title', 'Resource Library')
 @section('content')
 <style>
   .sh{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px}
@@ -20,8 +20,8 @@
 
 <div class="sh">
   <div>
-    <h1>Suppliers</h1>
-    <div style="font-size:13px;color:#8a7d68;margin-top:3px">Curate the offers members see in the directory.</div>
+    <h1>Resource Library</h1>
+    <div style="font-size:13px;color:#8a7d68;margin-top:3px">Curate the supplier offers and resources members see.</div>
   </div>
   <div>
     <a class="sreq" href="{{ route('admin.suppliers.requests') }}">Requests @if($openRequests)<span style="color:#a4283a">({{ $openRequests }})</span>@endif</a>

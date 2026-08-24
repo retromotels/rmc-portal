@@ -239,10 +239,6 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::delete('/suppliers/{supplier}', [SupplierAdminController::class, 'destroy'])->name('suppliers.destroy');
     Route::get('/suppliers/requests', [SupplierAdminController::class, 'requests'])->name('suppliers.requests');
 
-    // Email outbox (preview of queued mail)
-    Route::get('/outbox', [OutboxController::class, 'index'])->name('outbox.index');
-    Route::post('/outbox/flush', [OutboxController::class, 'flush'])->name('outbox.flush');
-    Route::get('/outbox/{outbox}', [OutboxController::class, 'show'])->name('outbox.show');
 
     // Booking listing analyzer
     Route::get('/listings', [ListingController::class, 'index'])->name('listings.index');

@@ -28,7 +28,7 @@
 
     <div class="ph">
       <strong>Placeholders</strong> — type these in the body and they prefill with each property's details:
-      @foreach(\App\Models\Document::placeholders() as $key => $lbl)<code>{{ '{{'.$key.'}}' }}</code> @endforeach
+      @foreach(\App\Models\Document::placeholders() as $key => $lbl)@php($ph = '{'.'{'.$key.'}'.'}')<code>{{ $ph }}</code> @endforeach
     </div>
 
     <form method="POST" action="{{ $document->exists ? route('admin.documents.update', $document) : route('admin.documents.store') }}">

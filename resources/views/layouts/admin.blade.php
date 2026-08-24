@@ -23,16 +23,15 @@
       <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs @if($jobsPending)<span class="cnt">{{ $jobsPending }}</span>@endif</a>
       <a href="{{ route('admin.seekers') }}" class="{{ request()->routeIs('admin.seeker*') ? 'active' : '' }}"><span class="ic">🧑‍💼</span>Applicants</a>
       <a href="{{ route('admin.onboard.create') }}" class="{{ request()->routeIs('admin.onboard.*') ? 'active' : '' }}"><span class="ic">➕</span>Create Property</a>
-      <a href="{{ route('admin.activity') }}" class="{{ request()->routeIs('admin.activity') ? 'active' : '' }}"><span class="ic">📈</span>Activity</a>
+      <a href="{{ route('admin.activity') }}" class="{{ request()->routeIs('admin.activity') ? 'active' : '' }}"><span class="ic">📈</span>User Log</a>
       <a href="{{ route('admin.listings.index') }}" class="{{ request()->routeIs('admin.listings.*') ? 'active' : '' }}"><span class="ic">✅</span>Listing Check</a>
       <a href="{{ route('admin.content.edit') }}" class="{{ request()->routeIs('admin.content.*') ? 'active' : '' }}"><span class="ic">📰</span>Content</a>
-      <a href="{{ route('admin.outbox.index') }}" class="{{ request()->routeIs('admin.outbox.*') ? 'active' : '' }}"><span class="ic">📧</span>Outbox</a>
       <a href="{{ route('admin.policies') }}" class="{{ request()->routeIs('admin.policies') ? 'active' : '' }}"><span class="ic">📄</span>Signed Policies</a>
       @if(config('rmc.features.documents'))
         <a href="{{ route('admin.documents') }}" class="{{ request()->routeIs('admin.documents*') ? 'active' : '' }}"><span class="ic">📑</span>Documents</a>
       @endif
       @if(config('rmc.features.suppliers'))
-        <a href="{{ route('admin.suppliers') }}" class="{{ request()->routeIs('admin.suppliers*') ? 'active' : '' }}"><span class="ic">📇</span>Suppliers</a>
+        <a href="{{ route('admin.suppliers') }}" class="{{ request()->routeIs('admin.suppliers*') ? 'active' : '' }}"><span class="ic">📚</span>Resource Library</a>
       @endif
     </nav>
     <div class="sb-foot">

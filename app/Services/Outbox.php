@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ActivityLog;
 use App\Models\OutboxEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\View;
@@ -27,8 +28,29 @@ class Outbox
         ]);
 
         Mailer::deliver($email);
+        self::logActivity($email, $meta);
 
         return $email;
+    }
+
+    /** Record every triggered email in the User Log. */
+    private static function logActivity(OutboxEmail $email, array $meta): void
+    {
+        try {
+            $userId = $meta['user_id'] ?? User::where('role', 'admin')->value('id');
+            ActivityLog::create([
+                'kind'       => 'email',
+                'user_id'    => $userId,
+                'account_id' => $meta['account_id'] ?? null,
+                'path'       => 'email/' . $email->template,
+                'label'      => \Illuminate\Support\Str::limit($email->subject, 120),
+                'detail'     => 'To: ' . $email->to_email,
+                'ip'         => null,
+                'created_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            // never let logging break sending
+        }
     }
 
     public static function welcome(User $u): void

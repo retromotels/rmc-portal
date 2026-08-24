@@ -1,5 +1,5 @@
 @extends('layouts.portal')
-@section('title', 'Vetting result · @' . $check->handle)
+@section('title', 'IG Checker · @' . $check->handle)
 @section('content')
 @php
   $arcColor = $check->band() === 'good' ? '#8FE2B6' : ($check->band() === 'warn' ? '#FFC078' : '#FF9C85');
