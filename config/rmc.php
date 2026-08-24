@@ -339,6 +339,16 @@ return [
         'live'           => (bool) env('STRIPE_SECRET'),
     ],
 
+    // Community forum categories (key => label).
+    'forum_categories' => [
+        'general'    => 'General chat',
+        'marketing'  => 'Marketing & bookings',
+        'operations' => 'Operations & maintenance',
+        'suppliers'  => 'Suppliers & deals',
+        'staffing'   => 'Staff & hiring',
+        'wins'       => 'Wins & wisdom',
+    ],
+
     // Supplier directory categories (key => label).
     'supplier_categories' => [
         'energy'        => 'Energy & utilities',

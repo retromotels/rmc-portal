@@ -59,13 +59,12 @@
     <div class="mrow">
       <div>
         <h2 class="mtitle">👥 Community</h2>
-        <p class="mdesc">A page inviting members into the collective community, with a group link.</p>
+        <p class="mdesc">A gated member directory + forum. A property must join (add itself) before it can see the directory or take part. The title and welcome message below appear on the join screen.</p>
       </div>
       <label class="sw"><input type="checkbox" name="module_community" value="1" @checked(\App\Models\Setting::bool('module_community'))><span class="sl"></span></label>
     </div>
-    <label class="fld"><span>Page title</span><input type="text" name="community_title" value="{{ \App\Models\Setting::get('community_title') }}"></label>
-    <label class="fld"><span>Body</span><textarea name="community_body">{{ \App\Models\Setting::get('community_body') }}</textarea></label>
-    <label class="fld"><span>Group link (optional)</span><input type="url" name="community_link" value="{{ \App\Models\Setting::get('community_link') }}" placeholder="https://…"></label>
+    <label class="fld"><span>Join-screen title</span><input type="text" name="community_title" value="{{ \App\Models\Setting::get('community_title') }}"></label>
+    <label class="fld"><span>Join-screen welcome message</span><textarea name="community_body">{{ \App\Models\Setting::get('community_body') }}</textarea></label>
   </div>
 
   <button class="msave" type="submit">Save modules</button>

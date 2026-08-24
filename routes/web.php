@@ -16,6 +16,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\VettingController;
 use App\Http\Controllers\AIAssistController;
 use App\Http\Controllers\ModulePageController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\Admin\ModulesController;
 use App\Http\Controllers\Admin\DocumentAdminController;
 use App\Http\Controllers\Admin\SupplierAdminController;
@@ -178,7 +179,20 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
     Route::post('/tools/ai-assist/ask', [AIAssistController::class, 'ask'])->name('tools.ai-assist.ask');
     Route::post('/tools/ai-assist/clear', [AIAssistController::class, 'clear'])->name('tools.ai-assist.clear');
     Route::get('/tools/roundtable', [ModulePageController::class, 'roundtable'])->name('tools.roundtable');
-    Route::get('/tools/community', [ModulePageController::class, 'community'])->name('tools.community');
+
+    // Tools → Community (member directory + forum; must join to see)
+    Route::get('/tools/community', [CommunityController::class, 'index'])->name('tools.community');
+    Route::post('/tools/community/join', [CommunityController::class, 'join'])->name('tools.community.join');
+    Route::get('/tools/community/directory', [CommunityController::class, 'directory'])->name('tools.community.directory');
+    Route::get('/tools/community/profile', [CommunityController::class, 'profileEdit'])->name('tools.community.profile');
+    Route::post('/tools/community/profile', [CommunityController::class, 'profileUpdate'])->name('tools.community.profile.update');
+    Route::get('/tools/community/avatar/{member}', [CommunityController::class, 'avatar'])->name('tools.community.avatar');
+    Route::get('/tools/community/new', [CommunityController::class, 'threadCreate'])->name('tools.community.thread.create');
+    Route::post('/tools/community/new', [CommunityController::class, 'threadStore'])->name('tools.community.thread.store');
+    Route::get('/tools/community/thread/{thread}', [CommunityController::class, 'threadShow'])->name('tools.community.thread');
+    Route::post('/tools/community/thread/{thread}/reply', [CommunityController::class, 'replyStore'])->name('tools.community.reply');
+    Route::delete('/tools/community/thread/{thread}', [CommunityController::class, 'threadDelete'])->name('tools.community.thread.delete');
+    Route::delete('/tools/community/reply/{reply}', [CommunityController::class, 'replyDelete'])->name('tools.community.reply.delete');
 
     // Tools → Suppliers directory (feature-flagged)
     Route::get('/tools/suppliers', [SupplierController::class, 'index'])->name('tools.suppliers');
