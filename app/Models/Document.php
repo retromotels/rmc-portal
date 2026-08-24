@@ -55,10 +55,10 @@ class Document extends Model
     /** Replace {{placeholders}} in the body with a property's details. */
     public function personalise(?User $property): string
     {
-        return static::fill($this->body, $property);
+        return static::render($this->body, $property);
     }
 
-    public static function fill(string $body, ?User $property): string
+    public static function render(string $body, ?User $property): string
     {
         $a = $property?->sectionData('A') ?? [];
         $b = $property?->sectionData('B') ?? [];
