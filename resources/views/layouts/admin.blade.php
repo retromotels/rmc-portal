@@ -28,6 +28,12 @@
       <a href="{{ route('admin.content.edit') }}" class="{{ request()->routeIs('admin.content.*') ? 'active' : '' }}"><span class="ic">📰</span>Content</a>
       <a href="{{ route('admin.outbox.index') }}" class="{{ request()->routeIs('admin.outbox.*') ? 'active' : '' }}"><span class="ic">📧</span>Outbox</a>
       <a href="{{ route('admin.policies') }}" class="{{ request()->routeIs('admin.policies') ? 'active' : '' }}"><span class="ic">📄</span>Signed Policies</a>
+      @if(config('rmc.features.documents'))
+        <a href="{{ route('admin.documents') }}" class="{{ request()->routeIs('admin.documents*') ? 'active' : '' }}"><span class="ic">📑</span>Documents</a>
+      @endif
+      @if(config('rmc.features.suppliers'))
+        <a href="{{ route('admin.suppliers') }}" class="{{ request()->routeIs('admin.suppliers*') ? 'active' : '' }}"><span class="ic">📇</span>Suppliers</a>
+      @endif
     </nav>
     <div class="sb-foot">
       <div class="who">{{ auth()->user()->name }}</div><div class="prop">{{ auth()->user()->email }}</div>

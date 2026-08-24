@@ -267,6 +267,27 @@ return [
         'suppliers' => (bool) env('RMC_FEATURE_SUPPLIERS', false),
     ],
 
+    // Supplier directory categories (key => label).
+    'supplier_categories' => [
+        'energy'        => 'Energy & utilities',
+        'insurance'     => 'Insurance',
+        'software'      => 'Software & technology',
+        'linen'         => 'Linen & laundry',
+        'amenities'     => 'Guest amenities',
+        'food-beverage' => 'Food & beverage',
+        'maintenance'   => 'Maintenance & trades',
+        'marketing'     => 'Marketing & OTA',
+        'finance'       => 'Finance & payments',
+        'other'         => 'Other',
+    ],
+
+    // Supplier offer types.
+    'supplier_offer_types' => [
+        'code'    => 'Discount code',
+        'link'    => 'Offer link',
+        'request' => 'Request via head office',
+    ],
+
     'employment_types' => [
         'full-time' => 'Full-time',
         'part-time' => 'Part-time',

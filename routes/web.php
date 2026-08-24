@@ -11,6 +11,10 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ChatWidgetController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\Admin\DocumentAdminController;
+use App\Http\Controllers\Admin\SupplierAdminController;
 use App\Http\Controllers\PublicWidgetController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\Admin\JobAdminController;
@@ -131,6 +135,17 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
     Route::get('/tools/chat-widget', [ChatWidgetController::class, 'edit'])->name('tools.chat-widget');
     Route::put('/tools/chat-widget', [ChatWidgetController::class, 'update']);
 
+    // Tools → SOP Documents (feature-flagged)
+    Route::get('/tools/documents', [DocumentController::class, 'index'])->name('tools.documents');
+    Route::get('/tools/documents/{document}', [DocumentController::class, 'show'])->name('tools.documents.show');
+    Route::post('/tools/documents/{document}/download', [DocumentController::class, 'download'])->name('tools.documents.download');
+
+    // Tools → Suppliers directory (feature-flagged)
+    Route::get('/tools/suppliers', [SupplierController::class, 'index'])->name('tools.suppliers');
+    Route::get('/tools/suppliers/{supplier}', [SupplierController::class, 'show'])->name('tools.suppliers.show');
+    Route::post('/tools/suppliers/{supplier}/save', [SupplierController::class, 'toggleSave'])->name('tools.suppliers.save');
+    Route::post('/tools/suppliers/{supplier}/request', [SupplierController::class, 'sendRequest'])->name('tools.suppliers.request');
+
     // Jobs (property listings for the public board)
     Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
     Route::get('/jobs/new', [JobController::class, 'create'])->name('jobs.create');
@@ -175,6 +190,24 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     // Admin-controlled property content
     Route::get('/content', [ContentController::class, 'edit'])->name('content.edit');
     Route::put('/content', [ContentController::class, 'update'])->name('content.update');
+
+    // SOP Documents (feature-flagged)
+    Route::get('/documents', [DocumentAdminController::class, 'index'])->name('documents');
+    Route::get('/documents/create', [DocumentAdminController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [DocumentAdminController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}/edit', [DocumentAdminController::class, 'edit'])->name('documents.edit');
+    Route::put('/documents/{document}', [DocumentAdminController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{document}', [DocumentAdminController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents/{document}/stats', [DocumentAdminController::class, 'stats'])->name('documents.stats');
+
+    // Suppliers directory (feature-flagged)
+    Route::get('/suppliers', [SupplierAdminController::class, 'index'])->name('suppliers');
+    Route::get('/suppliers/create', [SupplierAdminController::class, 'create'])->name('suppliers.create');
+    Route::post('/suppliers', [SupplierAdminController::class, 'store'])->name('suppliers.store');
+    Route::get('/suppliers/{supplier}/edit', [SupplierAdminController::class, 'edit'])->name('suppliers.edit');
+    Route::put('/suppliers/{supplier}', [SupplierAdminController::class, 'update'])->name('suppliers.update');
+    Route::delete('/suppliers/{supplier}', [SupplierAdminController::class, 'destroy'])->name('suppliers.destroy');
+    Route::get('/suppliers/requests', [SupplierAdminController::class, 'requests'])->name('suppliers.requests');
 
     // Email outbox (preview of queued mail)
     Route::get('/outbox', [OutboxController::class, 'index'])->name('outbox.index');
