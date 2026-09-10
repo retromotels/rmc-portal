@@ -15,6 +15,7 @@ use App\Models\JobSeeker;
 use App\Models\Supplier;
 use App\Models\SupplierRequest;
 use App\Models\User;
+use App\Services\WebFetcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +33,7 @@ class AdminAIController extends Controller
             'configured' => (bool) config('rmc.ai.enabled'),
             'history'    => session('admin_ai_history', []),
             'reportId'   => $r->query('report'),
+            'website'    => $r->query('website'),
         ]);
     }
 
@@ -79,15 +81,62 @@ class AdminAIController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    /** Crawl an external website (homepage + key pages) and report on it. */
+    public function websiteReport(Request $r, WebFetcher $web)
+    {
+        $data = $r->validate([
+            'url'  => ['required', 'string', 'max:300'],
+            'note' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        if (!config('rmc.ai.enabled')) {
+            return response()->json(['reply' => "The AI isn't connected yet — add the Anthropic API key."]);
+        }
+
+        $pages = $web->crawl($data['url']);
+        if (empty($pages)) {
+            return response()->json([
+                'reply' => "I couldn't read that site — it may be down, blocking automated readers, or the address is off. Double-check the URL" . (config('rmc.ai.scraper.key') ? '.' : ', and note a scraper key hasn\'t been added yet (works keyless but with tight rate limits).'),
+                'you'   => 'Website report: ' . $data['url'],
+            ]);
+        }
+
+        $corpus = '';
+        foreach ($pages as $u => $text) {
+            $corpus .= "\n\n===== PAGE: {$u} =====\n" . $text;
+        }
+        $corpus = mb_substr($corpus, 0, 24000);
+
+        $system = "You are a web/marketing analyst for the Retro Motel Collective. You've been given the readable text of "
+            . count($pages) . " page(s) crawled from a motel/hospitality website. Write a practical website report for head office with these sections: "
+            . "Overview (what the site is & first impression), Content & messaging, Booking & contact (can a guest easily book/enquire? what's visible), "
+            . "SEO & discoverability signals (from the content you can see), What's working, and Recommendations (specific, prioritised). "
+            . "Be honest and concrete; only judge what's actually in the text. Plain Australian English.";
+        $user = ($data['note'] ? "Context: {$data['note']}\n\n" : '')
+            . "Crawled pages:\n" . $corpus;
+
+        try {
+            $reply = $this->askClaude([['role' => 'user', 'content' => $user]], $system);
+        } catch (\Throwable $e) {
+            Log::warning('AdminAI website report failed: ' . $e->getMessage());
+            return response()->json(['reply' => "I read the site but couldn't generate the report just then — please try again.", 'you' => 'Website report: ' . $data['url']]);
+        }
+
+        $reply = 'Pages read: ' . implode(', ', array_keys($pages)) . "\n\n" . $reply;
+
+        // Keep it out of the rolling chat context (reports are large/one-off).
+        return response()->json(['reply' => $reply, 'you' => 'Website report: ' . $data['url']]);
+    }
+
     /* ------------------------------------------------------------- Claude */
 
-    private function askClaude(array $history): string
+    private function askClaude(array $history, ?string $systemOverride = null): string
     {
-        $system = "You are the operations AI for the Retro Motel Collective's head office (admin). "
+        $system = $systemOverride ?? ("You are the operations AI for the Retro Motel Collective's head office (admin). "
             . "You have a live snapshot of the whole system below and should use it to answer questions, look things up, "
             . "summarise, and spot things that need attention. Be concise, specific and practical, in plain Australian English. "
             . "If asked for something not in the snapshot, say what you can see and suggest where to look.\n\n"
-            . "=== LIVE SYSTEM SNAPSHOT ===\n" . $this->systemSnapshot();
+            . "=== LIVE SYSTEM SNAPSHOT ===\n" . $this->systemSnapshot());
 
         $resp = Http::withHeaders([
             'x-api-key'         => config('rmc.ai.key'),

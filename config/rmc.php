@@ -259,6 +259,16 @@ return [
         'key'        => env('ANTHROPIC_API_KEY'),
         'model'      => env('ANTHROPIC_MODEL', 'claude-haiku-4-5-20251001'),
         'enabled'    => (bool) env('ANTHROPIC_API_KEY'),
+        /*
+        | Web scraper for the admin AI's website reports. Uses Jina Reader, which
+        | renders JS and returns clean text. Works keyless (rate-limited); add
+        | RMC_SCRAPER_KEY (a Jina API key) for higher limits/reliability.
+        */
+        'scraper' => [
+            'base'      => env('RMC_SCRAPER_BASE', 'https://r.jina.ai/'),
+            'key'       => env('RMC_SCRAPER_KEY'),
+            'max_pages' => (int) env('RMC_SCRAPER_MAX_PAGES', 5),
+        ],
     ],
 
     // Staging-only features (kept off in production until sign-off).

@@ -227,6 +227,7 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/ai', [AdminAIController::class, 'index'])->name('ai');
     Route::post('/ai/ask', [AdminAIController::class, 'ask'])->name('ai.ask');
     Route::post('/ai/clear', [AdminAIController::class, 'clear'])->name('ai.clear');
+    Route::post('/ai/website', [AdminAIController::class, 'websiteReport'])->name('ai.website');
     Route::get('/motels', [AdminController::class, 'motels'])->name('motels');
     Route::get('/motels/{user}', [AdminController::class, 'motel'])->name('motel');
     Route::put('/motels/{user}/notes', [AdminController::class, 'saveNotes'])->name('motel.notes');

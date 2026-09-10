@@ -1,9 +1,13 @@
 @extends('layouts.admin')
 @section('title', $member->motel ?: 'Motel')
 @section('content')
+@php $siteUrl = $member->sectionData('A')['website'] ?? null; @endphp
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap">
   <a class="btn btn-ghost sm" href="{{ route('admin.motels') }}">← All motels</a>
-  <a class="btn btn-teal sm" href="{{ route('admin.images.index', $member) }}">🖼️ Website &amp; booking images</a>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    @if($siteUrl)<a class="btn btn-ghost sm" href="{{ route('admin.ai', ['website' => $siteUrl]) }}">🌐 Website report</a>@endif
+    <a class="btn btn-teal sm" href="{{ route('admin.images.index', $member) }}">🖼️ Website &amp; booking images</a>
+  </div>
 </div>
 
 <div class="grid g2">

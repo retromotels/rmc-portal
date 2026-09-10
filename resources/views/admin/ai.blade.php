@@ -28,6 +28,13 @@
   <div class="warn">The AI isn't connected yet — add the Anthropic API key to the server and it'll start answering.</div>
 @endunless
 
+<div style="background:#eef4f4;border:1px solid #cfe3e2;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+  <span style="font-weight:700;font-size:13.5px;color:#2f6f76">🌐 Website report</span>
+  <input type="text" id="siteUrl" placeholder="motelwebsite.com.au" style="flex:1;min-width:200px;padding:9px 12px;border:1.5px solid #cfe3e2;border-radius:9px;font:inherit;font-size:14px;background:#fff">
+  <button id="siteGo" onclick="runWebsite()" style="background:#2f6f76;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;cursor:pointer">Crawl &amp; report</button>
+  <span style="font-size:12px;color:#8a7d68;width:100%">Reads the homepage + a few key pages and writes a report.</span>
+</div>
+
 <div class="ai-wrap">
   <div class="ai-stream" id="stream">
     @forelse($history as $m)
@@ -54,6 +61,7 @@
 <script>
 const stream = document.getElementById('stream');
 const REPORT_ID = @json($reportId);
+const WEBSITE = @json($website);
 function add(role, text){ var e=document.getElementById('empty'); if(e)e.remove(); var d=document.createElement('div'); d.className='msg '+(role==='user'?'user':'bot'); d.textContent=text; stream.appendChild(d); stream.scrollTop=stream.scrollHeight; return d; }
 function useChip(el){ document.getElementById('input').value=el.textContent; document.getElementById('input').focus(); }
 function post(payload, youText){
@@ -65,7 +73,17 @@ function post(payload, youText){
     .catch(()=>{ thinking.textContent='Something went wrong — please try again.'; btn.disabled=false; });
 }
 function sendMsg(ev){ ev.preventDefault(); var inp=document.getElementById('input'); var msg=inp.value.trim(); if(!msg)return false; inp.value=''; post({message:msg}, msg); return false; }
+function runWebsite(){
+  var el=document.getElementById('siteUrl'); var url=el.value.trim(); if(!url)return;
+  var btn=document.getElementById('siteGo'); btn.disabled=true; var old=btn.textContent; btn.textContent='Crawling…';
+  add('user','Website report: '+url);
+  var thinking=add('bot','Reading the site — this can take 20–40 seconds…');
+  fetch('{{ route('admin.ai.website') }}', {method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},body:JSON.stringify({url:url})})
+    .then(r=>r.json()).then(d=>{ thinking.textContent=d.reply||'No report.'; btn.disabled=false; btn.textContent=old; stream.scrollTop=stream.scrollHeight; })
+    .catch(()=>{ thinking.textContent='Something went wrong reading that site — please try again.'; btn.disabled=false; btn.textContent=old; });
+}
 document.getElementById('input').addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); document.getElementById('form').requestSubmit(); }});
 if(REPORT_ID){ post({report_id: REPORT_ID}, 'Build a report on request #'+REPORT_ID); }
+if(WEBSITE){ document.getElementById('siteUrl').value = WEBSITE; runWebsite(); }
 </script>
 @endsection
