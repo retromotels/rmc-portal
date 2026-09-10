@@ -32,7 +32,9 @@ class WebFetcher
     public function fetch(string $url, int $limit = 8000): ?string
     {
         $base = rtrim((string) config('rmc.ai.scraper.base'), '/') . '/';
-        $headers = ['Accept' => 'text/plain', 'X-Return-Format' => 'text'];
+        // Default (markdown) output — far richer than 'text' and keeps the links
+        // the crawler follows to find internal pages.
+        $headers = ['Accept' => 'text/plain'];
         if ($key = config('rmc.ai.scraper.key')) {
             $headers['Authorization'] = 'Bearer ' . $key;
         }
