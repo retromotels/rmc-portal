@@ -267,6 +267,8 @@ return [
         'suppliers'     => (bool) env('RMC_FEATURE_SUPPLIERS', false),
         'vetting'       => (bool) env('RMC_FEATURE_VETTING', false),
         'external_jobs' => (bool) env('RMC_FEATURE_EXTERNAL_JOBS', false),
+        // Natural-language AI search band on the public jobs board (off for now).
+        'jobs_ai_search' => (bool) env('RMC_FEATURE_JOBS_AI_SEARCH', false),
     ],
 
     /*

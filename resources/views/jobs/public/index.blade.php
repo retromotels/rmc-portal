@@ -54,6 +54,7 @@
   </div>
 </header>
 
+@if(config('rmc.features.jobs_ai_search'))
 <section class="ai-band">
   <div class="wrap">
     <form class="ai-form" method="GET" action="{{ route('jobs.board') }}">
@@ -80,6 +81,8 @@
     @endif
   </div>
 </section>
+
+@endif
 
 <section class="controls">
   <div class="wrap">
