@@ -76,7 +76,10 @@ class WebFetcher
         preg_match_all('~\]\((https?://[^)\s]+)\)~i', $home, $m);
         $candidates = [];
         foreach (array_unique($m[1] ?? []) as $link) {
-            $link = rtrim($link, '/');
+            $link = rtrim(preg_replace('~#.*$~', '', $link), '/'); // drop #fragments
+            if ($link === '') {
+                continue;
+            }
             $lhost = parse_url($link, PHP_URL_HOST);
             if (!$lhost || stripos($lhost, preg_replace('~^www\.~', '', $host)) === false) {
                 continue;
