@@ -19,6 +19,7 @@ use App\Http\Controllers\ModulePageController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\Admin\ModulesController;
 use App\Http\Controllers\Admin\CommunityAdminController;
+use App\Http\Controllers\Admin\AdminAIController;
 use App\Http\Controllers\Admin\DocumentAdminController;
 use App\Http\Controllers\Admin\SupplierAdminController;
 use App\Http\Controllers\PublicWidgetController;
@@ -221,6 +222,11 @@ Route::middleware(['auth', ResolveProperty::class, LogActivity::class])->group(f
 // Admin (head office)
 Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'overview'])->name('overview');
+
+    // Head-office AI assistant
+    Route::get('/ai', [AdminAIController::class, 'index'])->name('ai');
+    Route::post('/ai/ask', [AdminAIController::class, 'ask'])->name('ai.ask');
+    Route::post('/ai/clear', [AdminAIController::class, 'clear'])->name('ai.clear');
     Route::get('/motels', [AdminController::class, 'motels'])->name('motels');
     Route::get('/motels/{user}', [AdminController::class, 'motel'])->name('motel');
     Route::put('/motels/{user}/notes', [AdminController::class, 'saveNotes'])->name('motel.notes');

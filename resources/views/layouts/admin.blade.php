@@ -18,7 +18,8 @@
     <div class="sb-logo">@include('partials.logo', ['stack' => true])<small class="adm-tag">HEAD OFFICE · ADMIN</small></div>
     <nav class="nav">
       <a href="{{ route('admin.overview') }}" class="{{ request()->routeIs('admin.overview') ? 'active' : '' }}"><span class="ic">📊</span>Overview</a>
-      <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"><span class="ic">🔔</span>Notifications @if($unread)<span class="cnt">{{ $unread }}</span>@endif</a>
+      <a href="{{ route('admin.ai') }}" class="{{ request()->routeIs('admin.ai') ? 'active' : '' }}"><span class="ic">🤖</span>AI Assistant</a>
+      <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"><span class="ic">🔔</span>Requests @if($unread)<span class="cnt">{{ $unread }}</span>@endif</a>
       <a href="{{ route('admin.motels') }}" class="{{ request()->routeIs('admin.motel*') ? 'active' : '' }}"><span class="ic">🏨</span>Motels</a>
       <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs @if($jobsPending)<span class="cnt">{{ $jobsPending }}</span>@endif</a>
       <a href="{{ route('admin.seekers') }}" class="{{ request()->routeIs('admin.seeker*') ? 'active' : '' }}"><span class="ic">🧑‍💼</span>Applicants</a>
