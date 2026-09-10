@@ -59,6 +59,11 @@ class AdminAIController extends Controller
             return response()->json(['reply' => 'Ask me anything about the collective — members, jobs, applicants, the community, requests…']);
         }
 
+        // If the chat mentions a website, crawl and report on it instead of a data answer.
+        if (empty($data['report_id']) && ($url = $this->extractUrl($userMsg))) {
+            return response()->json($this->buildWebsiteReport(app(WebFetcher::class), $url, $userMsg));
+        }
+
         $history = session('admin_ai_history', []);
         $history[] = ['role' => 'user', 'content' => $userMsg];
 
@@ -89,16 +94,23 @@ class AdminAIController extends Controller
             'note' => ['nullable', 'string', 'max:500'],
         ]);
 
+        return response()->json($this->buildWebsiteReport($web, $data['url'], $data['note'] ?? null));
+    }
+
+    /** Crawl a site and return a report payload {reply, you}. Shared by the tool + chat. */
+    private function buildWebsiteReport(WebFetcher $web, string $url, ?string $note = null): array
+    {
+        $label = 'Website report: ' . $url;
         if (!config('rmc.ai.enabled')) {
-            return response()->json(['reply' => "The AI isn't connected yet — add the Anthropic API key."]);
+            return ['reply' => "The AI isn't connected yet — add the Anthropic API key.", 'you' => $label];
         }
 
-        $pages = $web->crawl($data['url']);
+        $pages = $web->crawl($url);
         if (empty($pages)) {
-            return response()->json([
-                'reply' => "I couldn't read that site — it may be down, blocking automated readers, or the address is off. Double-check the URL" . (config('rmc.ai.scraper.key') ? '.' : ', and note a scraper key hasn\'t been added yet (works keyless but with tight rate limits).'),
-                'you'   => 'Website report: ' . $data['url'],
-            ]);
+            return [
+                'reply' => "I couldn't read that site — it may be down, blocking automated readers, or the address is off. Double-check the URL" . (config('rmc.ai.scraper.key') ? '.' : ", and note a scraper key hasn't been added yet (works keyless but with tight rate limits)."),
+                'you'   => $label,
+            ];
         }
 
         $corpus = '';
@@ -112,20 +124,28 @@ class AdminAIController extends Controller
             . "Overview (what the site is & first impression), Content & messaging, Booking & contact (can a guest easily book/enquire? what's visible), "
             . "SEO & discoverability signals (from the content you can see), What's working, and Recommendations (specific, prioritised). "
             . "Be honest and concrete; only judge what's actually in the text. Plain Australian English.";
-        $user = ($data['note'] ? "Context: {$data['note']}\n\n" : '')
-            . "Crawled pages:\n" . $corpus;
+        $user = ($note ? "Context: {$note}\n\n" : '') . "Crawled pages:\n" . $corpus;
 
         try {
             $reply = $this->askClaude([['role' => 'user', 'content' => $user]], $system);
         } catch (\Throwable $e) {
             Log::warning('AdminAI website report failed: ' . $e->getMessage());
-            return response()->json(['reply' => "I read the site but couldn't generate the report just then — please try again.", 'you' => 'Website report: ' . $data['url']]);
+            return ['reply' => "I read the site but couldn't generate the report just then — please try again.", 'you' => $label];
         }
 
-        $reply = 'Pages read: ' . implode(', ', array_keys($pages)) . "\n\n" . $reply;
+        return ['reply' => 'Pages read: ' . implode(', ', array_keys($pages)) . "\n\n" . $reply, 'you' => $label];
+    }
 
-        // Keep it out of the rolling chat context (reports are large/one-off).
-        return response()->json(['reply' => $reply, 'you' => 'Website report: ' . $data['url']]);
+    /** Pull a website URL out of a chat message (ignores email addresses). */
+    private function extractUrl(string $text): ?string
+    {
+        if (preg_match('~\bhttps?://[^\s]+~i', $text, $m)) {
+            return rtrim($m[0], '.,);]');
+        }
+        if (preg_match('~(?<![\w@.])((?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com\.au|net\.au|org\.au|com|net|org|co|io|info|biz|au))(/[^\s]*)?~i', $text, $m)) {
+            return rtrim($m[0], '.,);]');
+        }
+        return null;
     }
 
     /* ------------------------------------------------------------- Claude */
