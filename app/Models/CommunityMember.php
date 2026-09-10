@@ -20,6 +20,13 @@ class CommunityMember extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /** Uses the property's account photo (set in Account) — no separate upload. */
+    public function photoUrl(): ?string
+    {
+        $p = $this->property;
+        return $p && $p->photo_path ? \Illuminate\Support\Facades\Storage::url($p->photo_path) : null;
+    }
+
     public function initials(): string
     {
         $parts = preg_split('/\s+/', trim($this->display_name)) ?: [];

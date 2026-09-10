@@ -27,20 +27,17 @@
       <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}"><span class="ic">ℹ️</span>About Us</a>
       <a href="{{ route('faq') }}" class="{{ request()->routeIs('faq') ? 'active' : '' }}"><span class="ic">❓</span>FAQ</a>
       <div style="font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#b7ab97;margin:16px 0 4px;padding:0 4px">Tools</div>
+      @if(\App\Models\Setting::bool('module_ai_assist'))
+        <a href="{{ route('tools.ai-assist') }}" class="{{ request()->routeIs('tools.ai-assist') ? 'active' : '' }}"><span class="ic">✨</span>AI Assist</a>
+      @endif
       <a href="{{ route('health') }}" class="{{ request()->routeIs('health') ? 'active' : '' }}"><span class="ic">🩺</span>Health Check</a>
       <a href="{{ route('tools.chat-widget') }}" class="{{ request()->routeIs('tools.chat-widget') ? 'active' : '' }}"><span class="ic">💬</span>Chat Widget</a>
       <a href="{{ route('jobs.index') }}" class="{{ request()->routeIs('jobs.*') ? 'active' : '' }}"><span class="ic">💼</span>Jobs</a>
-      @if(config('rmc.features.vetting'))
-        <a href="{{ route('tools.vetting') }}" class="{{ request()->routeIs('tools.vetting*') ? 'active' : '' }}"><span class="ic">🔎</span>IG Checker</a>
-      @endif
       @if(config('rmc.features.documents'))
         <a href="{{ route('tools.documents') }}" class="{{ request()->routeIs('tools.documents*') ? 'active' : '' }}"><span class="ic">📚</span>Resource Library</a>
       @endif
       @if(config('rmc.features.suppliers'))
         <a href="{{ route('tools.suppliers') }}" class="{{ request()->routeIs('tools.suppliers*') ? 'active' : '' }}"><span class="ic">📇</span>Suppliers</a>
-      @endif
-      @if(\App\Models\Setting::bool('module_ai_assist'))
-        <a href="{{ route('tools.ai-assist') }}" class="{{ request()->routeIs('tools.ai-assist') ? 'active' : '' }}"><span class="ic">✨</span>AI Assist</a>
       @endif
       @if(\App\Models\Setting::bool('module_roundtable'))
         <a href="{{ route('tools.roundtable') }}" class="{{ request()->routeIs('tools.roundtable') ? 'active' : '' }}"><span class="ic">🎙️</span>Monthly Roundtable</a>

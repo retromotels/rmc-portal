@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 @section('title', 'Community')
 @section('content')
-@php($avatar = function($m){ return $m && $m->avatar_path ? route('tools.community.avatar', $m) : null; })
+@php($avatar = fn($m) => $m ? $m->photoUrl() : null)
 <style>
   .ch-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px}
   .ch-h{font-family:Oswald,sans-serif;font-size:26px;margin:0}

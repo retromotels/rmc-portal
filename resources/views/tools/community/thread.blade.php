@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 @section('title', $thread->title)
 @section('content')
-@php($avatar = function($m){ return $m && $m->avatar_path ? route('tools.community.avatar', $m) : null; })
+@php($avatar = fn($m) => $m ? $m->photoUrl() : null)
 <style>
   .tv{max-width:720px}
   .tv-back{color:#6c6577;text-decoration:none;font-size:13.5px}

@@ -81,10 +81,7 @@ class CommunityController extends Controller
             'headline'     => ['nullable', 'string', 'max:140'],
             'bio'          => ['nullable', 'string', 'max:2000'],
             'website'      => ['nullable', 'string', 'max:200'],
-            'avatar'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
-
-        $avatarPath = $r->hasFile('avatar') ? $r->file('avatar')->store('community-avatars', 'local') : null;
 
         CommunityMember::create([
             'user_id'      => $prop->id,
@@ -94,7 +91,6 @@ class CommunityController extends Controller
             'headline'     => $data['headline'] ?? null,
             'bio'          => $data['bio'] ?? null,
             'website'      => $data['website'] ?? null,
-            'avatar_path'  => $avatarPath,
         ]);
 
         return redirect()->route('tools.community')->with('flash', "You're in — welcome to the community.");
@@ -119,16 +115,8 @@ class CommunityController extends Controller
             'headline'     => ['nullable', 'string', 'max:140'],
             'bio'          => ['nullable', 'string', 'max:2000'],
             'website'      => ['nullable', 'string', 'max:200'],
-            'avatar'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
-        if ($r->hasFile('avatar')) {
-            if ($me->avatar_path) {
-                Storage::disk('local')->delete($me->avatar_path);
-            }
-            $data['avatar_path'] = $r->file('avatar')->store('community-avatars', 'local');
-        }
-        unset($data['avatar']);
         $me->update($data);
 
         return redirect()->route('tools.community.directory')->with('flash', 'Profile updated.');

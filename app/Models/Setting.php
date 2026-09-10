@@ -8,24 +8,20 @@ class Setting extends Model
 {
     protected $fillable = ['key', 'value'];
 
-    /** Per-request cache of all settings. */
-    private static ?array $cache = null;
-
-    private static function all_cached(): array
-    {
-        if (self::$cache === null) {
-            try {
-                self::$cache = self::query()->pluck('value', 'key')->all();
-            } catch (\Throwable $e) {
-                self::$cache = []; // table not migrated yet — fall back to defaults
-            }
-        }
-        return self::$cache;
-    }
-
+    /**
+     * Read a setting. Values written by put() are JSON-encoded (so arrays like
+     * the FAQ/About content round-trip); values seeded raw (module flags/content)
+     * are returned as-is. Returns $default when unset.
+     */
     public static function get(string $key, $default = null)
     {
-        return self::all_cached()[$key] ?? $default;
+        $row = static::query()->where('key', $key)->first();
+        if (!$row || $row->value === null) {
+            return $default;
+        }
+        $decoded = json_decode($row->value, true);
+        // Valid JSON → return decoded; otherwise it's a raw string value.
+        return json_last_error() === JSON_ERROR_NONE ? $decoded : $row->value;
     }
 
     public static function bool(string $key, bool $default = false): bool
@@ -36,9 +32,6 @@ class Setting extends Model
 
     public static function put(string $key, $value): void
     {
-        self::updateOrCreate(['key' => $key], ['value' => $value]);
-        if (self::$cache !== null) {
-            self::$cache[$key] = $value;
-        }
+        static::updateOrCreate(['key' => $key], ['value' => json_encode($value)]);
     }
 }

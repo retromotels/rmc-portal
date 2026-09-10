@@ -33,7 +33,7 @@
     <p class="cj-note">Create your community profile to see the member directory and the forum. Only members can see who's in and take part.</p>
     @if($errors->any())<div class="err">{{ $errors->first() }}</div>@endif
 
-    <form method="POST" action="{{ route('tools.community.join') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('tools.community.join') }}">
       @csrf
       <div class="row">
         <label class="fld"><span>Display name</span><input type="text" name="display_name" value="{{ old('display_name', $prop->motel ?: $prop->name) }}" required></label>
@@ -41,10 +41,8 @@
       </div>
       <label class="fld"><span>Headline</span><input type="text" name="headline" value="{{ old('headline') }}" placeholder="e.g. 14-room beachside motel, family run" maxlength="140"></label>
       <label class="fld"><span>About your property</span><textarea name="bio" placeholder="A few lines about you and your motel — what you're known for, what you're working on.">{{ old('bio', $prop->bio) }}</textarea></label>
-      <div class="row">
-        <label class="fld"><span>Website (optional)</span><input type="text" name="website" value="{{ old('website') }}" placeholder="https://…"></label>
-        <label class="fld"><span>Profile photo (optional)</span><input type="file" name="avatar" accept="image/*"></label>
-      </div>
+      <label class="fld"><span>Website (optional)</span><input type="text" name="website" value="{{ old('website') }}" placeholder="https://…"></label>
+      <p class="cj-note" style="margin-top:-4px">Your profile photo comes from your <a href="{{ route('account') }}" style="color:#e0491d;font-weight:700">Account</a> — add one there and it shows here too.</p>
       <button class="cj-go" type="submit">Join the community →</button>
     </form>
   </div>

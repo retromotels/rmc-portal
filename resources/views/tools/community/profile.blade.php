@@ -22,11 +22,11 @@
   <h1 class="cp-h">My community profile</h1>
   <div class="cp-card">
     @if($errors->any())<div class="err">{{ $errors->first() }}</div>@endif
-    <form method="POST" action="{{ route('tools.community.profile.update') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('tools.community.profile.update') }}">
       @csrf
       <div class="cp-av">
-        @if($me->avatar_path)<img class="av" src="{{ route('tools.community.avatar', $me) }}" alt="">@else<span class="av">{{ $me->initials() }}</span>@endif
-        <label class="fld" style="flex:1;margin:0"><span>Change photo</span><input type="file" name="avatar" accept="image/*"></label>
+        @if($me->photoUrl())<img class="av" src="{{ $me->photoUrl() }}" alt="">@else<span class="av">{{ $me->initials() }}</span>@endif
+        <div style="flex:1"><div style="font-weight:700;font-size:14px;margin-bottom:3px">Profile photo</div><div style="font-size:12.5px;color:#8a7d68">Comes from your <a href="{{ route('account') }}" style="color:#e0491d;font-weight:700">Account</a> photo — update it there.</div></div>
       </div>
       <div class="row">
         <label class="fld"><span>Display name</span><input type="text" name="display_name" value="{{ old('display_name', $me->display_name) }}" required></label>
