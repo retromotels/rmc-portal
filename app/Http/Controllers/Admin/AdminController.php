@@ -44,6 +44,16 @@ class AdminController extends Controller
         ]);
     }
 
+    /** Save private head-office notes on a motel. */
+    public function saveNotes(Request $r, User $user)
+    {
+        abort_if($user->isAdmin(), 404);
+        $data = $r->validate(['admin_notes' => ['nullable', 'string', 'max:20000']]);
+        $user->update(['admin_notes' => $data['admin_notes'] ?? null]);
+
+        return back()->with('status', 'Notes saved.');
+    }
+
     /**
      * Permanently delete a motel (its profile + account). If it's a top-level
      * account, its linked child properties go too. FK cascade removes the

@@ -222,6 +222,7 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::get('/', [AdminController::class, 'overview'])->name('overview');
     Route::get('/motels', [AdminController::class, 'motels'])->name('motels');
     Route::get('/motels/{user}', [AdminController::class, 'motel'])->name('motel');
+    Route::put('/motels/{user}/notes', [AdminController::class, 'saveNotes'])->name('motel.notes');
     Route::delete('/motels/{user}', [AdminController::class, 'destroy'])->name('motel.delete');
 
     // Jobs approval queue

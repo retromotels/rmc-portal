@@ -35,6 +35,17 @@
   </div>
 </div>
 
+<div class="section-title"><h3>Head-office notes</h3><div class="rule"></div></div>
+<div class="card">
+  @if(session('status'))<div style="background:#dff3e6;border:1px solid #a9dcbf;color:#2e7d4f;border-radius:9px;padding:9px 12px;font-size:13px;margin-bottom:12px">{{ session('status') }}</div>@endif
+  <p class="sub" style="margin:0 0 10px">Private notes on this motel — visible to head office only.</p>
+  <form method="POST" action="{{ route('admin.motel.notes', $member) }}">
+    @csrf @method('PUT')
+    <textarea name="admin_notes" rows="7" style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;line-height:1.55;background:#fff;box-sizing:border-box;resize:vertical" placeholder="Call notes, follow-ups, context…">{{ old('admin_notes', $member->admin_notes) }}</textarea>
+    <div style="margin-top:10px"><button class="btn btn-teal sm" type="submit">Save notes</button></div>
+  </form>
+</div>
+
 <div class="section-title"><h3>Signed policy documents</h3><div class="rule"></div></div>
 <div class="card">
   @forelse($member->policyDocuments as $pd)
