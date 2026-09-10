@@ -29,9 +29,9 @@
   .nav-links{display:flex;gap:20px;align-items:center;font-weight:600;font-size:14px}
   .nav-links a,.nav-links button{text-decoration:none;color:var(--ink-soft);background:none;border:none;font:inherit;cursor:pointer}
   .nav-links a:hover{color:var(--rust)}
-  /* Distinct account button — teal pill so it stands apart from the rust hero/search */
-  .nav-cta{background:#1f7a6d;color:#fff !important;padding:9px 18px;border-radius:24px;font-weight:800;box-shadow:0 6px 16px rgba(31,122,109,.28);transition:transform .12s,box-shadow .12s}
-  .nav-cta:hover{color:#fff !important;transform:translateY(-1px);box-shadow:0 9px 20px rgba(31,122,109,.34)}
+  /* Distinct account button — bright butter pill so it pops against the rust/cream */
+  .nav-cta{background:var(--butter);color:var(--ink) !important;padding:9px 18px;border-radius:24px;font-weight:800;box-shadow:0 6px 16px rgba(31,41,51,.14);transition:transform .12s,box-shadow .12s}
+  .nav-cta:hover{color:var(--ink) !important;background:#ffd93b;transform:translateY(-1px);box-shadow:0 9px 20px rgba(31,41,51,.2)}
   .nav-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--bone);vertical-align:middle}
   .nav-me{display:inline-flex;align-items:center;gap:8px}
   /* Hero */

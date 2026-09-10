@@ -2,8 +2,8 @@
 @section('title', 'Jobs at independent motels')
 @section('head')
 <style>
-  /* AI search — the hero of the filter area */
-  .ai-band{background:linear-gradient(180deg,var(--cream),var(--bone));border-bottom:1px solid var(--bone);padding:22px 0}
+  /* AI search — the hero of the filter area (distinct lilac band) */
+  .ai-band{background:linear-gradient(180deg,#efe6ff,#e2d2ff);border-bottom:1px solid #d6c2f5;padding:26px 0}
   .ai-form{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
   .ai-in{flex:1;min-width:240px;position:relative;display:flex;align-items:center}
   .ai-in .spark{position:absolute;left:15px;font-size:17px;pointer-events:none}

@@ -18,6 +18,7 @@ use App\Http\Controllers\AIAssistController;
 use App\Http\Controllers\ModulePageController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\Admin\ModulesController;
+use App\Http\Controllers\Admin\CommunityAdminController;
 use App\Http\Controllers\Admin\DocumentAdminController;
 use App\Http\Controllers\Admin\SupplierAdminController;
 use App\Http\Controllers\PublicWidgetController;
@@ -249,6 +250,12 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     // Member modules on/off + content
     Route::get('/modules', [ModulesController::class, 'index'])->name('modules');
     Route::put('/modules', [ModulesController::class, 'update'])->name('modules.update');
+
+    // Community oversight (members + all conversations)
+    Route::get('/community', [CommunityAdminController::class, 'index'])->name('community');
+    Route::get('/community/thread/{thread}', [CommunityAdminController::class, 'thread'])->name('community.thread');
+    Route::delete('/community/thread/{thread}', [CommunityAdminController::class, 'deleteThread'])->name('community.thread.delete');
+    Route::delete('/community/reply/{reply}', [CommunityAdminController::class, 'deleteReply'])->name('community.reply.delete');
 
     // SOP Documents (feature-flagged)
     Route::get('/documents', [DocumentAdminController::class, 'index'])->name('documents');

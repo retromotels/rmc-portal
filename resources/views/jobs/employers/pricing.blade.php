@@ -35,8 +35,7 @@
     <p>List a hospitality or motel role on the Retro Motels board — seen by job seekers who actually want to work in independent motels. No recruiters, no lock-ins.</p>
     <div class="ph-stats">
       <div><b>{{ number_format(\App\Models\JobListing::live()->count()) }}</b> live roles</div>
-      <div><b>{{ number_format(\App\Models\JobSeeker::count()) }}</b> registered seekers</div>
-      <div><b>Admin-checked</b> every listing</div>
+      <div><b>Hospitality-focused</b> audience</div>
     </div>
   </div>
 </header>
@@ -47,7 +46,7 @@
     <ul>
       <li>Seen by a hospitality-focused audience — no irrelevant noise</li>
       <li>Applications straight to your inbox, plus a simple dashboard</li>
-      <li>Reviewed by head office before it goes live</li>
+      <li>Easy to manage from your dashboard — edit or close anytime</li>
     </ul>
   </div>
 
