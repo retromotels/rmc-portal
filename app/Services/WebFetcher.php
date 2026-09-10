@@ -87,8 +87,12 @@ class WebFetcher
             if (rtrim($url, '/') === $link) {
                 continue;
             }
-            $score = 0;
             $path = strtolower((string) parse_url($link, PHP_URL_PATH));
+            // Skip images, docs and other non-page assets.
+            if (preg_match('~\.(jpe?g|png|gif|webp|svg|ico|pdf|zip|mp4|mov|css|js|woff2?|ttf|eot|xml)$~', $path)) {
+                continue;
+            }
+            $score = 0;
             foreach (self::PRIORITY as $i => $kw) {
                 if (str_contains($path, $kw)) {
                     $score += (count(self::PRIORITY) - $i);
