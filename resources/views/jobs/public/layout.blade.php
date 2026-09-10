@@ -35,7 +35,7 @@
   .nav-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--bone);vertical-align:middle}
   .nav-me{display:inline-flex;align-items:center;gap:8px}
   /* Hero */
-  header.hero{background:linear-gradient(180deg,#fff3d6,var(--cream));padding:52px 0 40px;border-bottom:1px solid var(--bone)}
+  header.hero{background:linear-gradient(180deg,#fff3d6,var(--cream));padding:52px 0 40px}
   .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:800;color:var(--rust-ink)}
   header.hero h1{font-family:var(--serif);font-size:clamp(38px,6vw,64px);font-weight:700;line-height:1.02;margin:10px 0 12px}
   header.hero h1 em{font-style:italic;color:var(--rust)}
